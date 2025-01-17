@@ -1,62 +1,62 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
-
 
 class FileUploadController extends Controller
 {
-    /*
-     * Display a listing of the resource.
-     */
     public function uploadFile(Request $request)
     {
         // Валидация загружаемого файла
-        $validator = Validator::make(
-            [
-                'file'      => $request->file,
-                'extension' => strtolower($request->file->getClientOriginalExtension()),
-            ],
-            [
-                'file'          => 'required',
-                'extension'      => 'required|in:csv', // Только CSV
-            ]
-        );
-
-        // Проверка на ошибки валидации
-        if ($validator->fails()) {
-            // Возврат ответа с ошибками валидации
-            return response()->json([
-                'errors' => $validator->errors(),
-            ], 422);
-        }
+        $request->validate([
+            'file' => 'required|file|mimes:csv|max:2048', // Ограничение по размеру файла
+        ]);
 
         $file = $request->file('file');
 
-        if (!$file) {
-            return response()->json([
-                'errors' => ['file' => 'Файл не был выбран.'],
-            ], 422);
-        }
-
-        // Продолжайте обработку файла
-
-        // Создание уникального имени для файла
-        $fileName = uniqid() . '.' . $file->getClientOriginalExtension();
-
-        // Сохранение файла в директорию 'public/uploads'
-        $filePath = $file->storeAs('uploads', $fileName, 'public');
-
         // Чтение данных из файла
-        $data = $this->readDataFromFile($file->getPathname(), $file->getClientOriginalExtension());
+        $data = $this->readDataFromFile($file->getPathname());
 
         // Вставка данных в базу данных
+        $this->insertUsers($data);
+
+        return response()->json(['message' => 'Выполнено'], 200);
+    }
+
+    private function readDataFromFile(string $filePath): array
+    {
+        return $this->readCSV($filePath);
+    }
+
+    private function readCSV(string $filePath): array
+    {
+        $data = [];
+
+        if (($file = fopen($filePath, 'r')) !== false) {
+            while (($row = fgetcsv($file)) !== false) {
+                if (count($row) >= 3) { // Проверка на количество колонок
+                    $data[] = [
+                        'bio' => $row[0],
+                        'link' => $row[1],
+                        'adress' => $row[2],
+                    ];
+                }
+            }
+            fclose($file);
+        } else {
+            throw new \Exception('Не удалось открыть файл.');
+        }
+
+        return $data;
+    }
+
+    private function insertUsers(array $data): void
+    {
         foreach ($data as $row) {
-            // Проверка наличия данных в массиве
-            if (isset($row['bio'], $row['link'], $row['adress'])) {
+            if (!empty($row['bio']) && !empty($row['link']) && !empty($row['adress'])) {
                 User::create([
                     'bio' => $row['bio'],
                     'link' => $row['link'],
@@ -64,33 +64,5 @@ class FileUploadController extends Controller
                 ]);
             }
         }
-
-        // Возврат ответа
-        // return redirect()->back()->with('success', 'Файл загружен успешно!');
-        return 'выполнено';
-    }
-
-    private function readDataFromFile($filePath, $extension)
-    {
-        $data = [];
-        if ($extension === 'csv') {
-            $data = $this->readCSV($filePath);
-        }
-        return $data;
-    }
-
-    private function readCSV($filePath)
-    {
-        $data = [];
-        $file = fopen($filePath, 'r');
-        while (($row = fgetcsv($file)) !== false) {
-            $data[] = [
-                'bio' => $row[0],
-                'link' => $row[1],
-                'adress' => $row[2],
-            ];
-        }
-        fclose($file);
-        return $data;
     }
 }
