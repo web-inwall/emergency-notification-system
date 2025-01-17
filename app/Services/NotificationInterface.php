@@ -4,5 +4,5 @@ namespace App\Services;
 
 interface NotificationInterface
 {
-    public function sendNotifications($templateName, $message);
+    public function sendNotifications($templateName, $message, $data);
 }

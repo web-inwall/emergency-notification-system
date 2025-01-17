@@ -9,25 +9,26 @@ use App\Services\NotificationInterface;
 
 class NotificationService implements NotificationInterface
 {
-    public function sendNotifications($templateName, $message)
+    public function sendNotifications($templateName, $message, $data)
     {
+
         $groupNotification = Notification::create([
             'template_name' => $templateName,
             'message' => $message,
         ]);
 
-        // Получение всех пользователей
-        $users = User::all();
+        // // Получение всех user_id из загруженных данных
+        // $userIds = array_column($userData, 'id');
 
-        $notificationRecipients = [];
-        foreach ($users as $user) {
-            $notificationRecipients[] = [
-                'notification_id' => $groupNotification->id,
-                'user_id' => $user->id,
-            ];
-        }
+        // // Объединение всех user_id в одну строку
+        // $userIdsString = implode(',', $userIds);
 
-        // Создание записей в таблице notification__recipients для всех user_id
-        Notification_Recipient::insert($notificationRecipients);
+        // dd($userIds);
+
+        // // Создание одной записи в таблице notification__recipients для всех user_id
+        // Notification_Recipient::create([
+        //     'notification_id' => $groupNotification->id,
+        //     'user_id' => $userIdsString,
+        // ]);
     }
 }

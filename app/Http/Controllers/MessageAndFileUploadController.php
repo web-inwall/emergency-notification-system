@@ -26,16 +26,17 @@ class MessageAndFileUploadController extends Controller
         $file = $request->file('file'); // получаем информацию о файле
         $templateName = $request->input('template_name'); // получаем имя шаблона
         $message = $request->input('message'); // получаем введенное сообщение
+        $filePath = $file->getPathname();
 
         try {
             // Чтение данных из файла
-            $data = $this->fileReader->readData($file->getPathname()); // в $data будет массив массивов с ключами и их значениями
+            $data = $this->fileReader->readData($filePath); // в $data будет массив массивов с ключами и их значениями
 
             // Вставка пользователей в БД
             $this->userRepository->insertUsers($data);
 
             // Отправка уведомлений пользователям
-            $this->notification->sendNotifications($templateName, $message);
+            $this->notification->sendNotifications($templateName, $message, $data);
 
             return response()->json(['message' => 'Выполнено'], 200);
         } catch (Exception $e) {
