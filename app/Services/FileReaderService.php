@@ -28,7 +28,7 @@ class FileReaderService implements FileReaderInterface
             fclose($handle);
 
             if (count($data) > 0) {
-                return $data;
+                return ['batchId' => $batchId, 'data' => $data];
             } else {
                 throw new Exception('Файл не соответствует формату CSV. Не удалось найти данные в правильном формате.');
             }

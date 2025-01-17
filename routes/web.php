@@ -7,7 +7,6 @@ use App\Http\Controllers\MessageAndFileUploadController;
 
 Route::get('/', [MainController::class, 'index'])->name('main.index');
 
-Route::post('/send-form', [MessageAndFileUploadController::class, 'importUsersAndNotify'])->name('importUsersAndNotify');
+Route::delete('/delete', [MainController::class, 'delete'])->name('main.delete');
 
-// Route::get('/select-template', [NotificationController::class, 'selectTemplate'])->name('selectTemplate');
-// Route::post('/send-notification', [NotificationController::class, 'sendNotification'])->name('sendNotification');
+Route::post('/send-form', [MessageAndFileUploadController::class, 'importUsersAndNotify'])->name('importUsersAndNotify');

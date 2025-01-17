@@ -5,6 +5,7 @@
     <title>Главная</title>
 </head>
 <body>
+    <button onclick="deleteUsers()">Удалить всех пользователей из базы</button>
 
     <h2>Внесите получателей и введите сообщение</h2>
     <form id="uploadForm" action="{{ route('importUsersAndNotify') }}" method="POST" enctype="multipart/form-data">
@@ -79,6 +80,23 @@
                 }
             });
         }
+        </script>
+
+        <script>
+            function deleteUsers() {
+                fetch('{{ route('main.delete') }}', {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                }).then(response => {
+                    // Обработка успешного удаления
+                    console.log('Пользователи успешно удалены');
+                }).catch(error => {
+                    // Обработка ошибки удаления
+                    console.error('Произошла ошибка при удалении пользователей');
+                });
+            }
         </script>
         </body>
 </html>

@@ -33,7 +33,7 @@ class MessageAndFileUploadController extends Controller
             $data = $this->fileReader->readData($filePath); // в $data будет массив массивов с ключами и их значениями
 
             // Вставка пользователей в БД
-            $this->userRepository->insertUsers($data);
+            $this->userRepository->insertUsers($data['data']);
 
             // Отправка уведомлений пользователям
             $this->notification->sendNotifications($templateName, $message, $data);

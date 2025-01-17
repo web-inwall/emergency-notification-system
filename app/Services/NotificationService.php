@@ -2,33 +2,43 @@
 
 namespace App\Services;
 
-use App\Models\User;
 use App\Models\Notification;
 use App\Models\Notification_Recipient;
+use App\Models\User;
+use App\Repositories\UserRepository;
 use App\Services\NotificationInterface;
+use Illuminate\Support\Facades\DB;
+
+use AppRepositoriesUserRepository;
 
 class NotificationService implements NotificationInterface
 {
+    private $userRepository;
+
+    public function __construct(UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
     public function sendNotifications($templateName, $message, $data)
     {
+        $batchId = $data['batchId']; // Получение batchId из данных
+        $userData = $data['data']; // Получение данных о пользователях
 
         $groupNotification = Notification::create([
             'template_name' => $templateName,
             'message' => $message,
         ]);
 
-        // // Получение всех user_id из загруженных данных
-        // $userIds = array_column($userData, 'id');
+        $userIds = $this->userRepository->getUserIdsByBatchId($batchId); // Получение ID пользователей по batch_id
 
-        // // Объединение всех user_id в одну строку
-        // $userIdsString = implode(',', $userIds);
+        $userIdsString = implode(',', $userIds); // Объединение ID пользователей
 
-        // dd($userIds);
-
-        // // Создание одной записи в таблице notification__recipients для всех user_id
-        // Notification_Recipient::create([
-        //     'notification_id' => $groupNotification->id,
-        //     'user_id' => $userIdsString,
-        // ]);
+        $notificationRecipient = new Notification_Recipient();
+        $notificationRecipient->user_id = $userIdsString;
+        $notificationRecipient->notification_id = $groupNotification->id;
+        $notificationRecipient->created_at = now();
+        $notificationRecipient->updated_at = now();
+        $notificationRecipient->save();
     }
 }
