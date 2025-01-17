@@ -10,14 +10,14 @@ class User extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'bio',
+        'link',
+        'address',
+    ];
+
     public function notification()
     {
         return $this->belongsToMany(Notification::class, 'notification_recipients');
     }
-
-    protected $fillable = [
-        'bio',
-        'link',
-        'adress',
-    ];
 }

@@ -2,13 +2,16 @@
 
 namespace App\Services;
 
-class NotificationService
+use App\Models\Notification;
+use App\Services\NotificationInterface;
+
+class NotificationService implements NotificationInterface
 {
-    public function sendNotifications(array $usersData)
+    public function sendNotifications($templateName, $message)
     {
-        foreach ($usersData as $user) {
-            // Логика отправки уведомлений пользователям
-            // Например, можно использовать Mail или другие методы
-        }
+        Notification::create([
+            'template_name' => $templateName,
+            'message' => $message,
+        ]);
     }
 }

@@ -2,31 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Exception;
 use App\Services\FileReaderInterface;
+use App\Services\NotificationInterface;
 use App\Repositories\UserRepositoryInterface;
-use App\Services\NotificationService;
+use App\Http\Requests\MessageAndFileUploadRequest;
 
-class FileUploadController extends Controller
+class MessageAndFileUploadController extends Controller
 {
-    private FileReaderInterface $fileReader;
-    private UserRepositoryInterface $userRepository;
-    private NotificationService $notificationService;
+    private $fileReader;
+    private $userRepository;
+    private $notification;
 
-    public function __construct(FileReaderInterface $fileReader, UserRepositoryInterface $userRepository, NotificationService $notificationService)
+    public function __construct(FileReaderInterface $fileReader, UserRepositoryInterface $userRepository, NotificationInterface $notification)
     {
         $this->fileReader = $fileReader;
         $this->userRepository = $userRepository;
-        $this->notificationService = $notificationService;
+        $this->notification = $notification;
     }
 
-    public function uploadFile(Request $request)
+    public function importUsersAndNotify(MessageAndFileUploadRequest $request)
     {
-        $request->validate([
-            'file' => 'required|file|mimes:csv|max:2048',
-        ]);
-
         $file = $request->file('file');
+        $templateName = $request->input('template_name');
+        $message = $request->input('message');
 
         try {
             // Чтение данных из файла
@@ -36,11 +35,12 @@ class FileUploadController extends Controller
             $this->userRepository->insertUsers($data);
 
             // Отправка уведомлений пользователям
-            $this->notificationService->sendNotifications($data);
+            $this->notification->sendNotifications($templateName, $message);
 
             return response()->json(['message' => 'Выполнено'], 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
+        // return redirect()->to('/');
     }
 }

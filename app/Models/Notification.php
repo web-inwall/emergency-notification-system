@@ -10,20 +10,13 @@ class Notification extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'template_name',
+        'message',
+    ];
+
     public function user()
     {
         return $this->belongsToMany(User::class, 'notification_recipients');
-    }
-
-    public function selectTemplate()
-    {
-        return 'Выбор шаблона';
-        redirect()->back();
-    }
-
-    public function sendNotification()
-    {
-        return 'Отправка нотификации';
-        redirect()->back();
     }
 }
