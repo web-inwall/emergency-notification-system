@@ -23,13 +23,13 @@ class MessageAndFileUploadController extends Controller
 
     public function importUsersAndNotify(MessageAndFileUploadRequest $request)
     {
-        $file = $request->file('file');
-        $templateName = $request->input('template_name');
-        $message = $request->input('message');
+        $file = $request->file('file'); // получаем информацию о файле
+        $templateName = $request->input('template_name'); // получаем имя шаблона
+        $message = $request->input('message'); // получаем введенное сообщение
 
         try {
             // Чтение данных из файла
-            $data = $this->fileReader->readData($file->getPathname());
+            $data = $this->fileReader->readData($file->getPathname()); // в $data будет массив массивов с ключами и их значениями
 
             // Вставка пользователей в БД
             $this->userRepository->insertUsers($data);

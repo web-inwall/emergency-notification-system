@@ -14,10 +14,11 @@ class User extends Model
         'bio',
         'link',
         'address',
+        'batch_id',
     ];
 
     public function notification()
     {
-        return $this->belongsToMany(Notification::class, 'notification_recipients');
+        return $this->belongsToMany(Notification::class, 'notification__recipients');
     }
 }

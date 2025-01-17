@@ -14,6 +14,8 @@ class FileReaderService implements FileReaderInterface
         $lines = explode(PHP_EOL, $fileContent);
         $data = [];
 
+        $batchId = uniqid(); // Генерация уникального идентификатора
+
         if (!empty($lines)) {
             foreach ($lines as $line) {
                 $row = str_getcsv($line);
@@ -23,6 +25,7 @@ class FileReaderService implements FileReaderInterface
                         'bio' => trim($row[0]),
                         'link' => trim($row[1]),
                         'address' => trim($row[2]),
+                        'batch_id' => $batchId, // Добавление уникального идентификатора для пачки данных
                     ];
                 }
             }

@@ -3,7 +3,6 @@
 <html>
 <head>
     <title>Главная</title>
-    {{-- <link rel="stylesheet" href="../css/app.css"> --}}
 </head>
 <body>
 
@@ -17,7 +16,6 @@
         <textarea name="message" placeholder="Введите сообщение" required></textarea>
         <button type="submit">Отправить</button>
     </form>
-
 
     <div id="preview" style="display: none">
         <h3>Загруженные пользователи:</h3>
