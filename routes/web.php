@@ -1,6 +1,4 @@
 <?php
-
-use App\Models\Notification;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\UserController;
