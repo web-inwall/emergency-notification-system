@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\Notification;
 use App\Models\Notification_Recipient;
-use App\Models\User;
 use App\Repositories\UserRepository;
 use App\Services\NotificationInterface;
 use Illuminate\Support\Facades\DB;

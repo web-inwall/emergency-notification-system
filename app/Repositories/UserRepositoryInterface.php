@@ -4,5 +4,5 @@ namespace App\Repositories;
 
 interface UserRepositoryInterface
 {
-    public function insertUsers(array $data): void;
+    public function insertUsers(array $userData): void;
 }

@@ -42,6 +42,5 @@ class MessageAndFileUploadController extends Controller
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
-        // return redirect()->to('/');
     }
 }

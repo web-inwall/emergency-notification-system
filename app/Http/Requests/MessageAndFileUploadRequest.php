@@ -25,6 +25,8 @@ class MessageAndFileUploadRequest extends FormRequest
     {
         return ([
             'file' => 'required|file|max:2048',
+            'template_name' => 'required|string|max:255',
+            'message' => 'required|string|max:100000',
         ]);
     }
 }
