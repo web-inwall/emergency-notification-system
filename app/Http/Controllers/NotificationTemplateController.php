@@ -3,19 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Interfaces\NotificationTemplateInterface;
-use App\Models\Notification;
+use App\Repositories\NotificationTemplateRepository;
 
 class NotificationTemplateController extends Controller implements NotificationTemplateInterface
 {
+    protected $notificationTemplateRepository;
+
+    public function __construct(NotificationTemplateRepository $notificationTemplateRepository)
+    {
+        $this->notificationTemplateRepository = $notificationTemplateRepository;
+    }
+
     public function showAllTemplates()
     {
-        $templatesExist = Notification::count() > 0;
+        $templates = $this->notificationTemplateRepository->getAllTemplates();
 
-        if ($templatesExist) {
-            $templates = Notification::pluck('template_name')->toArray();
-            return response()->json($templates);
-        } else {
-            return response()->json(['Сохраненных шаблонов нет.']);
-        }
+        return view('livewire.show-all-templates', compact('templates'));
     }
 }

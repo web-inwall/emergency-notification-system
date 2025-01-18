@@ -8,20 +8,13 @@
     <button onclick="deleteUsers()">Удалить все данные из базы</button>
     
     <button id="showTemplatesBtn" onclick="showAllTemplates()">Показать все шаблоны</button>
-
-
     <div id="allTemplates" style="display: none">
         <h3>Все шаблоны:</h3>
         <ul>
-            @if(isset($templates))
-                @foreach($templates as $template)
-                    <li>{{ $template }}</li>
-                @endforeach
-            @else
-                <li>Сохраненных шаблонов нет.</li>
-            @endif
+            @livewire('App\Livewire\ShowAllTemplates')
         </ul>
     </div>
+    
 
 
     <h2>Внесите получателей и введите сообщение</h2>
@@ -119,29 +112,9 @@
 </script>
 
 <script>
-    function showAllTemplates() {   
-        fetch('{{ route('notificationtemplate.show') }}')
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Ошибка при загрузке шаблонов');
-                }
-            })
-            .then(data => {
-                let templatesList = '';
-                if (data.length > 0) {
-                    data.forEach(template => {
-                        templatesList += '<li>' + template + '</li>';
-                    });
-                } else {
-                    templatesList = '<li>Сохраненных шаблонов нет.</li>';
-                }
-                let allTemplatesHTML = '<h3>Все шаблоны:</h3><ul>' + templatesList + '</ul>';
-                document.getElementById('allTemplates').innerHTML = allTemplatesHTML;
-                document.getElementById('allTemplates').style.display = 'block';
-            })
-            .catch(error => console.error('Ошибка при загрузке шаблонов:', error));
+    function showAllTemplates() {
+        // Изменяем стиль блока allTemplates на display: block
+        document.getElementById('allTemplates').style.display = 'block';
     }
 </script>
 
