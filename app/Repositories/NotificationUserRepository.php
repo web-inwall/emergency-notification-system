@@ -1,16 +1,12 @@
 <?php
 
-namespace App\Services;
+namespace App\Repositories;
 
-use App\Models\Notification;
-use App\Models\Notification_Recipient;
+use App\Interfaces\NotificationUserRepositoryInterface;
+use App\Models\Notification_User;
 use App\Repositories\UserRepository;
-use App\Services\NotificationInterface;
-use Illuminate\Support\Facades\DB;
 
-use AppRepositoriesUserRepository;
-
-class NotificationService implements NotificationInterface
+class NotificationUserRepository implements NotificationUserRepositoryInterface
 {
     private $userRepository;
 
@@ -19,21 +15,15 @@ class NotificationService implements NotificationInterface
         $this->userRepository = $userRepository;
     }
 
-    public function sendNotifications($templateName, $message, $data)
+    public function createNotificationUsers($data, $groupNotification)
     {
         $batchId = $data['batchId']; // Получение batchId из данных
-        $userData = $data['data']; // Получение данных о пользователях
-
-        $groupNotification = Notification::create([
-            'template_name' => $templateName,
-            'message' => $message,
-        ]);
 
         $userIds = $this->userRepository->getUserIdsByBatchId($batchId); // Получение ID пользователей по batch_id
 
         $userIdsString = implode(',', $userIds); // Объединение ID пользователей
 
-        $notificationRecipient = new Notification_Recipient();
+        $notificationRecipient = new Notification_User();
         $notificationRecipient->user_id = $userIdsString;
         $notificationRecipient->notification_id = $groupNotification->id;
         $notificationRecipient->created_at = now();

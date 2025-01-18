@@ -8,7 +8,7 @@
     <button onclick="deleteUsers()">Удалить всех пользователей из базы</button>
 
     <h2>Внесите получателей и введите сообщение</h2>
-    <form id="uploadForm" action="{{ route('importUsersAndNotify') }}" method="POST" enctype="multipart/form-data">
+    <form id="uploadForm" action="{{ route('main.manageUserNotificationWorkflow') }}" method="POST" enctype="multipart/form-data">
         @csrf
     
         <input type="file" name="file" id="file" required>
@@ -84,7 +84,7 @@
 
         <script>
             function deleteUsers() {
-                fetch('{{ route('main.delete') }}', {
+                fetch('{{ route('home.delete') }}', {
                     method: 'DELETE',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'

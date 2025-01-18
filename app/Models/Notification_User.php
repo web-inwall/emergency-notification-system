@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Notification_Recipient extends Model
+class Notification_User extends Model
 {
     use HasFactory;
 

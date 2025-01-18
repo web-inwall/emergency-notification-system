@@ -2,37 +2,57 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FormValidationRequest;
+use App\Interfaces\FileReaderInterface;
+use App\Interfaces\MainControllerInterface;
+use App\Interfaces\NotificationRepositoryInterface;
+use App\Interfaces\NotificationUserRepositoryInterface;
+use App\Interfaces\UserRepositoryInterface;
 use Exception;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\DB;
 
-class MainController extends Controller
+class MainController extends Controller implements MainControllerInterface
 {
-    public function index()
+    private $fileReader;
+    private $userRepository;
+    private $notificationRepository;
+    private $notificationUserRepository;
+    // private $notification;
+
+    public function __construct(FileReaderInterface $fileReader, UserRepositoryInterface $userRepository, NotificationRepositoryInterface $notificationRepository, NotificationUserRepositoryInterface $notificationUserRepository)
     {
-        return view('main');
+        $this->fileReader = $fileReader;
+        $this->userRepository = $userRepository;
+        $this->notificationRepository = $notificationRepository;
+        $this->notificationUserRepository = $notificationUserRepository;
+        // $this->notification = $notification;
     }
 
-    public function delete()
+    public function manageUserNotificationWorkflow(FormValidationRequest $request)
     {
-        DB::beginTransaction();
+        $file = $request->file('file'); // получаем информацию о файле
+        $templateName = $request->input('template_name'); // получаем имя шаблона
+        $message = $request->input('message'); // получаем введенное сообщение
+        $filePath = $file->getPathname();
 
         try {
-            // Удаление данных из таблицы 'users'
-            DB::table('users')->delete();
+            // Чтение данных из файла
+            $data = $this->fileReader->readData($filePath); // в $data будет массив массивов с ключами и их значениями
 
-            // Удаление данных из таблицы 'notification_recipients'
-            DB::table('notification__recipients')->delete();
+            // Вставка пользователей в БД
+            $this->userRepository->insertUsers($data['data']);
 
-            // Удаление данных из таблицы 'notifications'
-            DB::table('notifications')->delete();
+            // Вставка уведомления в БД
+            $groupNotification = $this->notificationRepository->createNotification($templateName, $message);
 
-            DB::commit();
+            // Вставка данных в таблицу связи
+            $this->notificationUserRepository->createNotificationUsers($data, $groupNotification);
 
-            return response()->json(['message' => 'Данные успешно удалены из всех таблиц'], 200);
+            // Отправка уведомлений пользователям
+            // $this->notification->sendNotifications($templateName, $message, $data);
+
+            return response()->json(['message' => 'Выполнено'], 200);
         } catch (Exception $e) {
-            DB::rollBack();
-            return response()->json(['error' => 'Произошла ошибка при удалении данных: ' . $e->getMessage()], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 }

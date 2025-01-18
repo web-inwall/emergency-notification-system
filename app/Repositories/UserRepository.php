@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\User;
-use App\Repositories\UserRepositoryInterface;
+use App\Interfaces\UserRepositoryInterface;
 use Exception;
 use Illuminate\Support\Facades\DB;
 

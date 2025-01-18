@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Services\FileReaderInterface;
+use App\Interfaces\FileReaderInterface;
 use Exception;
 
 class FileReaderService implements FileReaderInterface

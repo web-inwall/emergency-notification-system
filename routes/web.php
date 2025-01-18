@@ -1,11 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MainController;
-use App\Http\Controllers\MessageAndFileUploadController;
 
-Route::get('/', [MainController::class, 'index'])->name('main.index');
+Route::get('/', [HomeController::class, 'index'])->name('home.index');
 
-Route::delete('/delete', [MainController::class, 'delete'])->name('main.delete');
+Route::delete('/delete', [HomeController::class, 'delete'])->name('home.delete');
 
-Route::post('/send-form', [MessageAndFileUploadController::class, 'importUsersAndNotify'])->name('importUsersAndNotify');
+Route::post('/send-form', [MainController::class, 'manageUserNotificationWorkflow'])->name('main.manageUserNotificationWorkflow');

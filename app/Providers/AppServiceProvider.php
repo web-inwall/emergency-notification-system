@@ -2,13 +2,22 @@
 
 namespace App\Providers;
 
-use App\Services\FileReaderService;
-use App\Repositories\UserRepository;
-use App\Services\FileReaderInterface;
-use App\Services\NotificationService;
-use App\Services\NotificationInterface;
 use Illuminate\Support\ServiceProvider;
-use App\Repositories\UserRepositoryInterface;
+
+use App\Services\FileReaderService;
+use App\Interfaces\FileReaderInterface;
+
+use App\Repositories\UserRepository;
+use App\Interfaces\UserRepositoryInterface;
+
+use App\Http\Controllers\MainController;
+use App\Interfaces\MainControllerInterface;
+
+use App\Repositories\NotificationRepository;
+use App\Interfaces\NotificationRepositoryInterface;
+
+use App\Repositories\NotificationUserRepository;
+use App\Interfaces\NotificationUserRepositoryInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,9 +26,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->bind(MainControllerInterface::class, MainController::class);
         $this->app->bind(FileReaderInterface::class, FileReaderService::class);
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
-        $this->app->bind(NotificationInterface::class, NotificationService::class);
+        $this->app->bind(NotificationRepositoryInterface::class, NotificationRepository::class);
+        $this->app->bind(NotificationUserRepositoryInterface::class, NotificationUserRepository::class);
     }
 
     /**
