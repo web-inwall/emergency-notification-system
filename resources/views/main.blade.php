@@ -5,7 +5,24 @@
     <title>Главная</title>
 </head>
 <body>
-    <button onclick="deleteUsers()">Удалить всех пользователей из базы</button>
+    <button onclick="deleteUsers()">Удалить все данные из базы</button>
+    
+    <button id="showTemplatesBtn" onclick="showAllTemplates()">Показать все шаблоны</button>
+
+
+    <div id="allTemplates" style="display: none">
+        <h3>Все шаблоны:</h3>
+        <ul>
+            @if(isset($templates))
+                @foreach($templates as $template)
+                    <li>{{ $template }}</li>
+                @endforeach
+            @else
+                <li>Сохраненных шаблонов нет.</li>
+            @endif
+        </ul>
+    </div>
+
 
     <h2>Внесите получателей и введите сообщение</h2>
     <form id="uploadForm" action="{{ route('main.manageUserNotificationWorkflow') }}" method="POST" enctype="multipart/form-data">
@@ -32,71 +49,102 @@
         </table>
     </div>
 
-    <script>
-        document.getElementById('file').addEventListener('change', function(event) {
-            let file = event.target.files[0];
-            let previewDiv = document.getElementById('preview');
-            let userTableBody = document.querySelector("#userTable tbody");
-            userTableBody.innerHTML = ""; // Очищаем таблицу перед новой загрузкой
-        
-            if (file) {
-                let reader = new FileReader();
-        
-                reader.onload = function(e) {
-                    let content = e.target.result;
-                    displayCSVContent(content);
-                    previewDiv.style.display = 'block'; // Показываем блок предварительного просмотра
-                };
-        
-                reader.readAsText(file);
-            } else {
-                previewDiv.style.display = 'none'; // Скрываем блок предварительного просмотра, если файл не выбран
+    
+
+<script>
+    document.getElementById('file').addEventListener('change', function(event) {
+        let file = event.target.files[0];
+        let previewDiv = document.getElementById('preview');
+        let userTableBody = document.querySelector("#userTable tbody");
+        userTableBody.innerHTML = ""; // Очищаем таблицу перед новой загрузкой
+    
+        if (file) {
+            let reader = new FileReader();
+    
+            reader.onload = function(e) {
+                let content = e.target.result;
+                displayCSVContent(content);
+                previewDiv.style.display = 'block'; // Показываем блок предварительного просмотра
+            };
+    
+            reader.readAsText(file);
+        } else {
+            previewDiv.style.display = 'none'; // Скрываем блок предварительного просмотра, если файл не выбран
+        }
+    });
+    
+    function displayCSVContent(content) {
+        let rows = content.split("\n");
+        let tableBody = document.querySelector("#userTable tbody");
+        tableBody.innerHTML = ""; // Очищаем таблицу перед новой загрузкой
+    
+        rows.forEach((row, index) => {
+            if (row.trim() !== "") { // Пропускаем заголовок и пустые строки
+                let columns = row.split(",");
+                let tableRow = document.createElement("tr");
+    
+                let bioCell = document.createElement("td");
+                bioCell.textContent = columns[0]; // Первое значение — имя
+                tableRow.appendChild(bioCell);
+    
+                let linkCell = document.createElement("td");
+                linkCell.textContent = columns[1]; // Второе значение — email
+                tableRow.appendChild(linkCell);
+    
+                let adressCell = document.createElement("td");
+                adressCell.textContent = columns[2]; // Второе значение — email
+                tableRow.appendChild(adressCell);
+    
+                tableBody.appendChild(tableRow);
             }
         });
-        
-        function displayCSVContent(content) {
-            let rows = content.split("\n");
-            let tableBody = document.querySelector("#userTable tbody");
-            tableBody.innerHTML = ""; // Очищаем таблицу перед новой загрузкой
-        
-            rows.forEach((row, index) => {
-                if (row.trim() !== "") { // Пропускаем заголовок и пустые строки
-                    let columns = row.split(",");
-                    let tableRow = document.createElement("tr");
-        
-                    let bioCell = document.createElement("td");
-                    bioCell.textContent = columns[0]; // Первое значение — имя
-                    tableRow.appendChild(bioCell);
-        
-                    let linkCell = document.createElement("td");
-                    linkCell.textContent = columns[1]; // Второе значение — email
-                    tableRow.appendChild(linkCell);
-        
-                    let adressCell = document.createElement("td");
-                    adressCell.textContent = columns[2]; // Второе значение — email
-                    tableRow.appendChild(adressCell);
-        
-                    tableBody.appendChild(tableRow);
-                }
-            });
-        }
-        </script>
+    }
+</script>
 
-        <script>
-            function deleteUsers() {
-                fetch('{{ route('home.delete') }}', {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    }
-                }).then(response => {
-                    // Обработка успешного удаления
-                    console.log('Пользователи успешно удалены');
-                }).catch(error => {
-                    // Обработка ошибки удаления
-                    console.error('Произошла ошибка при удалении пользователей');
-                });
+<script>
+    function deleteUsers() {
+        fetch('{{ route('home.delete') }}', {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
             }
-        </script>
-        </body>
+        }).then(response => {
+            // Обработка успешного удаления
+            console.log('Пользователи успешно удалены');
+        }).catch(error => {
+            // Обработка ошибки удаления
+            console.error('Произошла ошибка при удалении пользователей');
+        });
+    }
+</script>
+
+<script>
+    function showAllTemplates() {   
+        fetch('{{ route('notificationtemplate.show') }}')
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Ошибка при загрузке шаблонов');
+                }
+            })
+            .then(data => {
+                let templatesList = '';
+                if (data.length > 0) {
+                    data.forEach(template => {
+                        templatesList += '<li>' + template + '</li>';
+                    });
+                } else {
+                    templatesList = '<li>Сохраненных шаблонов нет.</li>';
+                }
+                let allTemplatesHTML = '<h3>Все шаблоны:</h3><ul>' + templatesList + '</ul>';
+                document.getElementById('allTemplates').innerHTML = allTemplatesHTML;
+                document.getElementById('allTemplates').style.display = 'block';
+            })
+            .catch(error => console.error('Ошибка при загрузке шаблонов:', error));
+    }
+</script>
+
+    </body>
 </html>
+

@@ -1,8 +1,8 @@
 <?php
 
+// СТАРЫЙ КОД
 namespace App\Repositories;
 
-use App\Models\User;
 use App\Interfaces\UserRepositoryInterface;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -31,3 +31,6 @@ class UserRepository implements UserRepositoryInterface
             ->toArray();
     }
 }
+
+
+// НОВЫЙ КОД

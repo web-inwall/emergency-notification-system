@@ -47,10 +47,14 @@ class MainController extends Controller implements MainControllerInterface
             // Вставка данных в таблицу связи
             $this->notificationUserRepository->createNotificationUsers($data, $groupNotification);
 
+            // Вывод сохраненного шаблона
+
+
             // Отправка уведомлений пользователям
             // $this->notification->sendNotifications($templateName, $message, $data);
 
-            return response()->json(['message' => 'Выполнено'], 200);
+            // return response()->json(['message' => 'Выполнено'], 200);
+            return redirect()->to('/');
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
