@@ -68,3 +68,15 @@ function deleteUsers() {
 function showAllTemplates() {
     document.getElementById('allTemplates').style.display = 'block';
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    var form = document.querySelector('form');
+    var selectedTemplateMessage = document.querySelector('textarea[name="message"]');
+    var hiddenUserMessage = document.querySelector('input[name="userMessage"]');
+
+    form.addEventListener('submit', function() {
+        hiddenUserMessage.value = selectedTemplateMessage.value;
+    });
+});
+
+

@@ -15,8 +15,7 @@ class FormValidationRequest extends FormRequest
     public function rules()
     {
         return ([
-            'file' => 'required|file|max:2048',
-            'template_name' => 'required|string|max:255|unique:notifications',
+            'template_name' => 'required|string|max:255',
             'message' => 'required|string|max:100000',
         ]);
     }

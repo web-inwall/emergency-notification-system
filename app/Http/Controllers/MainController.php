@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use Exception;
 use Illuminate\Http\Request;
 use App\Interfaces\FileReaderInterface;
+use Illuminate\Support\Facades\Validator;
 use App\Interfaces\MainControllerInterface;
 use App\Interfaces\UserRepositoryInterface;
 use App\Http\Requests\FormValidationRequest;
+use Illuminate\Validation\ValidationException;
+use App\Http\Requests\FullFormValidationRequest;
 use App\Interfaces\NotificationRepositoryInterface;
 use App\Interfaces\NotificationUserRepositoryInterface;
 use App\Interfaces\SendNotificationControllerInterface;
@@ -33,36 +36,47 @@ class MainController extends Controller implements MainControllerInterface
     {
         $templateName = $request->input('template_name');
 
+        $message = $request->has('userMessage') ? $request->input('userMessage') : $request->input('selectedTemplateMessage');
+
+        $requestAllDataForm = new FullFormValidationRequest();
+
+        $validator = Validator::make($request->all(), $requestAllDataForm->rules());
+
         if ($request->hasFile('file')) {
-            $file = $request->file('file'); // получаем информацию о файле
-            $templateName = $request->input('template_name'); // получаем имя шаблона
-            $message = $request->input('message'); // получаем введенное сообщение
-            $filePath = $file->getPathname();
+            if ($validator->passes()) {
 
-            try {
-                // Чтение данных из файла
-                $data = $this->fileReader->readData($filePath); // в $data будет массив массивов с ключами и их значениями
+                $file = $request->file('file'); // получаем информацию о файле
+                // $message = $request->input('message'); // получаем введенное сообщение
+                $filePath = $file->getPathname();
 
-                // Вставка пользователей в БД
-                $this->userRepository->insertUsers($data['data']);
+                try {
+                    // Чтение данных из файла
+                    $data = $this->fileReader->readData($filePath); // в $data будет массив массивов с ключами и их значениями
 
-                // Вставка уведомления в БД
-                $groupNotification = $this->notificationRepository->createNotification($templateName, $message);
+                    // Вставка пользователей в БД
+                    $this->userRepository->insertUsers($data['data']);
 
-                // Вставка данных в таблицу связи
-                $this->notificationUserRepository->createNotificationUsers($data, $groupNotification);
+                    // Вставка уведомления в БД
+                    $groupNotification = $this->notificationRepository->createNotification($templateName, $message);
 
-                // Отправка уведомлений пользователям
-                $this->sendNotificationController->processingFormData($data, $templateName, $message);
+                    // Вставка данных в таблицу связи
+                    $this->notificationUserRepository->createNotificationUsers($data, $groupNotification);
 
-                // return response()->json(['message' => 'Выполнено'], 200);
-                // return redirect()->to('/');
+                    // Отправка уведомлений пользователям
+                    $this->sendNotificationController->processingFormData($data, $templateName, $message);
 
-            } catch (Exception $e) {
-                return response()->json(['error' => $e->getMessage()], 500);
+                    // return response()->json(['message' => 'Выполнено'], 200);
+                    // return redirect()->to('/');
+
+                } catch (Exception $e) {
+                    return response()->json(['error' => $e->getMessage()], 500);
+                }
+            } else {
+                throw ValidationException::withMessages($validator->errors()->messages());
             }
         } else {
-            $this->sendNotificationController->processingTemplateData($templateName);
+            // dd('данные введены автоматически');
+            $this->sendNotificationController->processingTemplateData($templateName, $message);
         }
     }
 }

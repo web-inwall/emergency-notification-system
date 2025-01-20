@@ -21,7 +21,7 @@ class NotificationTemplateRepository implements NotificationTemplateRepositoryIn
     private function getNotificationTemplates(): Collection
     {
         return Notification::join('notification__users', 'notifications.id', '=', 'notification__users.notification_id')
-            ->get(['notifications.id', 'notifications.id', 'notifications.template_name', 'notifications.message', 'notification__users.user_id']);
+            ->get(['notifications.id', 'notifications.template_name', 'notifications.message', 'notification__users.user_id']);
     }
 
     private function formatTemplates(Collection $templates): array

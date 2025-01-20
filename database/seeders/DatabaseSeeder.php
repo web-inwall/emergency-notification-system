@@ -22,10 +22,10 @@ class DatabaseSeeder extends Seeder
 
         $batchId = $faker->unique()->randomNumber(9);
 
-        UserFactory::factory()->count(25)->create(['batch_id' => $batchId]); // Создание 25 записей в таблице users
+        $users = UserFactory::factory()->count(7)->create(['batch_id' => $batchId]); // Создание 25 записей в таблице users
 
         $notification = Notification::factory()->create(); // Создание одной записи в таблице notifications
-        $userIds = User::pluck('id')->toArray(); // Получаем все id пользователей и преобразуем в массив
+        $userIds = $users->pluck('id')->toArray(); // Получаем все id пользователей и преобразуем в массив
         $userIdsString = implode(',', $userIds); // Преобразуем массив user_id в строку
 
         Notification_UserFactory::factory()->create([

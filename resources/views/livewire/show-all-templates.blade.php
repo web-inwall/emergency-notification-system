@@ -18,27 +18,49 @@
     <form id="uploadForm" action="{{ route('main.manageUserNotificationWorkflow') }}" method="POST" enctype="multipart/form-data">
         @csrf
         @if(empty($selectedTemplateName))
-        <input type="file" name="file" id="file" required>
+            <input type="file" name="file" id="file" required>
         @endif
-        <input type="text" name="template_name" placeholder="Имя шаблона отправки" wire:model="selectedTemplateName" required>
-        <textarea name="message" placeholder="Введите сообщение" wire:model="selectedTemplateMessage" required></textarea>
-        <button type="submit">Отправить</button>
+            <input type="text" name="template_name" placeholder="Имя шаблона отправки" wire:model="selectedTemplateName" required @if(!empty($selectedTemplateName)) readonly @endif>
+            <textarea name="message" placeholder="Введите сообщение" wire:model="selectedTemplateMessage" required></textarea>
+<input type="hidden" name="userMessage">
+
+
+            <button type="submit">Отправить</button>
     </form>
 
     @if(!empty($selectedTemplateName))
         <div>
             <h3>Загруженные пользователи:</h3>
             <table id="userTable">
-                <thead>
-                    @for (true)
+                {{-- <thead>
+                    @foreach($users as $user)
                         <tr>
-                            <th>{{ $selectedUserBio }}</th>
-                            <th>{{ $selectedUserLink }}</th>
-                            <th>{{ $selectedUserAddress }}</th>
+                            <td>{{ $user['bio'] }}</td>
+                            <td>{{ $user['link'] }}</td>
+                            <td>{{ $user['address'] }}</td>
                         </tr>
-                    @endfor
+                    @endforeach
+                </thead> --}}
+
+                <thead>
+                    @foreach($users as $index => $user)
+                    @if($index < 15)
+                        <tr>
+                            <td>{{ $user['bio'] }}</td>
+                            <td>{{ $user['link'] }}</td>
+                            <td>{{ $user['address'] }}</td>
+                        </tr>
+                    @else
+                        @if($index == 15)
+                            <tr>
+                                <td colspan="3">...</td>
+                            </tr>
+                        @endif
+                    @endif
+                @endforeach
                     
                 </thead>
+                    
                 <tbody></tbody>
             </table>
         </div>

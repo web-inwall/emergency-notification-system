@@ -17,15 +17,19 @@ class SendNotificationController extends Controller implements SendNotificationC
 
     public function processingFormData($data, $templateName, $message)
     {
-        dump($data['data'], $templateName, $message);
+        dump($templateName, $message, $data['data']);
     }
 
-    public function processingTemplateData($templateName)
+    public function processingTemplateData($templateName, $message)
     {
         $response = $this->notificationTemplateRepository->getDataTemplates();
         $this->templates = $response['templates'];
+
         $selectedTemplate = collect($this->templates)->firstWhere('template_name', $templateName);
 
-        dd($selectedTemplate);
+        dump('processingTemplateData');
+        dump($templateName);
+        dump($message);
+        dump($selectedTemplate['users']);
     }
 }
