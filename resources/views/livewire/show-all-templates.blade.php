@@ -30,11 +30,14 @@
             <h3>Загруженные пользователи:</h3>
             <table id="userTable">
                 <thead>
-                    <tr>
-                        <th>{{ $selectedUserBio }}</th>
-                        <th>{{ $selectedUserLink }}</th>
-                        <th>{{ $selectedUserAddress }}</th>
-                    </tr>
+                    @for (true)
+                        <tr>
+                            <th>{{ $selectedUserBio }}</th>
+                            <th>{{ $selectedUserLink }}</th>
+                            <th>{{ $selectedUserAddress }}</th>
+                        </tr>
+                    @endfor
+                    
                 </thead>
                 <tbody></tbody>
             </table>

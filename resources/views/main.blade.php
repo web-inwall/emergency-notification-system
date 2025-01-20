@@ -9,7 +9,7 @@
 </head>
 <body>
     <div class="container">        
-        <button id="deleteButton" data-delete-route="{{ route('home.delete') }}">Удалить данные</button>
+        <button onclick="deleteUsers()">Удалить все данные из базы</button>
 
         <button id="showTemplatesBtn" onclick="showAllTemplates()">Показать все шаблоны</button>
         
@@ -31,6 +31,24 @@
     </div>
 
     <script src="{{ asset('js/main.js') }}"></script>
+
+    <script>
+        function deleteUsers() {
+            fetch('{{ route('home.delete') }}', {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            }).then(response => {
+                // Обработка успешного удаления
+                console.log('Пользователи успешно удалены');
+            }).catch(error => {
+                // Обработка ошибки удаления
+                console.error('Произошла ошибка при удалении пользователей');
+            });
+        }
+    </script>
+
     
         @livewireScripts
     </body>
