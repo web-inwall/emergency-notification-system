@@ -17,7 +17,9 @@
     <h3>Внесите получателей и введите сообщение</h3>
     <form id="uploadForm" action="{{ route('main.manageUserNotificationWorkflow') }}" method="POST" enctype="multipart/form-data">
         @csrf
+        @if(empty($selectedTemplateName))
         <input type="file" name="file" id="file" required>
+        @endif
         <input type="text" name="template_name" placeholder="Имя шаблона отправки" wire:model="selectedTemplateName" required>
         <textarea name="message" placeholder="Введите сообщение" wire:model="selectedTemplateMessage" required></textarea>
         <button type="submit">Отправить</button>

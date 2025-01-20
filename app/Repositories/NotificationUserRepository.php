@@ -2,27 +2,39 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\NotificationUserRepositoryInterface;
 use App\Models\Notification_User;
-use App\Repositories\UserRepository;
+use App\Interfaces\UserRepositoryInterface;
+use App\Interfaces\NotificationUserRepositoryInterface;
 
 class NotificationUserRepository implements NotificationUserRepositoryInterface
 {
     private $userRepository;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepositoryInterface $userRepository)
     {
         $this->userRepository = $userRepository;
     }
 
     public function createNotificationUsers($data, $groupNotification)
     {
-        $batchId = $data['batchId']; // Получение batchId из данных
+        $userIds = $this->getUserIdsFromData($data);
+        $userIdsString = $this->implodeUserIds($userIds);
+        $this->saveNotificationRecipient($userIdsString, $groupNotification);
+    }
 
-        $userIds = $this->userRepository->getUserIdsByBatchId($batchId); // Получение ID пользователей по batch_id
+    private function getUserIdsFromData($data)
+    {
+        $batchId = $data['batchId'];
+        return $this->userRepository->getUserIdsByBatchId($batchId);
+    }
 
-        $userIdsString = implode(',', $userIds); // Объединение ID пользователей
+    private function implodeUserIds($userIds)
+    {
+        return implode(',', $userIds);
+    }
 
+    private function saveNotificationRecipient($userIdsString, $groupNotification)
+    {
         $notificationRecipient = new Notification_User();
         $notificationRecipient->user_id = $userIdsString;
         $notificationRecipient->notification_id = $groupNotification->id;

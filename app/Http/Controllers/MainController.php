@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\FormValidationRequest;
+use Exception;
+use Illuminate\Http\Request;
 use App\Interfaces\FileReaderInterface;
 use App\Interfaces\MainControllerInterface;
+use App\Interfaces\UserRepositoryInterface;
+use App\Http\Requests\FormValidationRequest;
 use App\Interfaces\NotificationRepositoryInterface;
 use App\Interfaces\NotificationUserRepositoryInterface;
-use App\Interfaces\UserRepositoryInterface;
-use Exception;
-
+use App\Interfaces\SendNotificationControllerInterface;
 
 class MainController extends Controller implements MainControllerInterface
 {
@@ -17,48 +18,51 @@ class MainController extends Controller implements MainControllerInterface
     private $userRepository;
     private $notificationRepository;
     private $notificationUserRepository;
-    // private $notification;
+    private $sendNotificationController;
 
-    public function __construct(FileReaderInterface $fileReader, UserRepositoryInterface $userRepository, NotificationRepositoryInterface $notificationRepository, NotificationUserRepositoryInterface $notificationUserRepository)
+    public function __construct(FileReaderInterface $fileReader, UserRepositoryInterface $userRepository, NotificationRepositoryInterface $notificationRepository, NotificationUserRepositoryInterface $notificationUserRepository, SendNotificationControllerInterface $sendNotificationController)
     {
         $this->fileReader = $fileReader;
         $this->userRepository = $userRepository;
         $this->notificationRepository = $notificationRepository;
         $this->notificationUserRepository = $notificationUserRepository;
-        // $this->notification = $notification;
+        $this->sendNotificationController = $sendNotificationController;
     }
 
     public function manageUserNotificationWorkflow(FormValidationRequest $request)
     {
+        $templateName = $request->input('template_name');
 
+        if ($request->hasFile('file')) {
+            $file = $request->file('file'); // получаем информацию о файле
+            $templateName = $request->input('template_name'); // получаем имя шаблона
+            $message = $request->input('message'); // получаем введенное сообщение
+            $filePath = $file->getPathname();
 
-        $file = $request->file('file'); // получаем информацию о файле
-        $templateName = $request->input('template_name'); // получаем имя шаблона
-        $message = $request->input('message'); // получаем введенное сообщение
-        $filePath = $file->getPathname();
+            try {
+                // Чтение данных из файла
+                $data = $this->fileReader->readData($filePath); // в $data будет массив массивов с ключами и их значениями
 
-        try {
-            // Чтение данных из файла
-            $data = $this->fileReader->readData($filePath); // в $data будет массив массивов с ключами и их значениями
+                // Вставка пользователей в БД
+                $this->userRepository->insertUsers($data['data']);
 
-            // Вставка пользователей в БД
-            $this->userRepository->insertUsers($data['data']);
+                // Вставка уведомления в БД
+                $groupNotification = $this->notificationRepository->createNotification($templateName, $message);
 
-            // Вставка уведомления в БД
-            $groupNotification = $this->notificationRepository->createNotification($templateName, $message);
+                // Вставка данных в таблицу связи
+                $this->notificationUserRepository->createNotificationUsers($data, $groupNotification);
 
-            // Вставка данных в таблицу связи
-            $this->notificationUserRepository->createNotificationUsers($data, $groupNotification);
+                // Отправка уведомлений пользователям
+                $this->sendNotificationController->processingFormData($data, $templateName, $message);
 
-            // Вывод сохраненного шаблона
+                // return response()->json(['message' => 'Выполнено'], 200);
+                // return redirect()->to('/');
 
-            // Отправка уведомлений пользователям
-            // $this->notification->sendNotifications($templateName, $message, $data);
-
-            // return response()->json(['message' => 'Выполнено'], 200);
-            return redirect()->to('/');
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            } catch (Exception $e) {
+                return response()->json(['error' => $e->getMessage()], 500);
+            }
+        } else {
+            $this->sendNotificationController->processingTemplateData($templateName);
         }
     }
 }

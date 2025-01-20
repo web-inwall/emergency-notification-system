@@ -2,8 +2,8 @@
 
 namespace App\Livewire;
 
-use App\Http\Controllers\NotificationTemplateController;
 use Livewire\Component;
+use App\Interfaces\NotificationTemplateRepositoryInterface;
 
 class ShowAllTemplates extends Component
 {
@@ -14,10 +14,12 @@ class ShowAllTemplates extends Component
     public $selectedUserLink = null;
     public $selectedUserAddress = null;
 
-    public function mount()
+    public function mount(NotificationTemplateRepositoryInterface $notificationTemplateRepository)
     {
-        $response = app(NotificationTemplateController::class)->showAllTemplates();
-        $this->templates = $response['templates']; //содержит массив массивов информации о шаблоне: имя, адрес и тд
+        $response = $notificationTemplateRepository->getDataTemplates();
+        $this->templates = $response['templates'];
+
+        $this->loadUserData(); // Вызов метода для загрузки данных о пользователях
     }
 
     public function selectTemplate($templateName)
@@ -28,26 +30,30 @@ class ShowAllTemplates extends Component
             $this->selectedTemplateName = $selectedTemplate['template_name'];
             $this->selectedTemplateMessage = $selectedTemplate['message'];
 
-            $userBios = [];
-            $userLinks = [];
-            $userAddresses = [];
-
-            // Оптимизация: Загрузка данных о пользователях только при необходимости
-            foreach ($selectedTemplate['users'] as $user) {
-                $userBios[] = $user['bio'];
-                $userLinks[] = $user['link'];
-                $userAddresses[] = $user['address'];
-            }
-
-            // Оптимизация: Объединение данных о пользователях только при необходимости
-            $this->selectedUserBio = implode(', ', $userBios); // Объединить биографии пользователей в строку
-            $this->selectedUserLink = implode(', ', $userLinks); // Объединить ссылки пользователей в строку
-            $this->selectedUserAddress = implode(', ', $userAddresses); // Объединить адреса пользователей в строку
+            $this->loadUserData($selectedTemplate['users']); // Передача данных о пользователях для загрузки
         } else {
             $this->resetFields();
         }
     }
 
+    private function loadUserData($users = [])
+    {
+        $userBios = [];
+        $userLinks = [];
+        $userAddresses = [];
+
+        // Оптимизация: Загрузка данных о пользователях только при необходимости
+        foreach ($users as $user) {
+            $userBios[] = $user['bio'];
+            $userLinks[] = $user['link'];
+            $userAddresses[] = $user['address'];
+        }
+
+        // Оптимизация: Объединение данных о пользователях только при необходимости
+        $this->selectedUserBio = implode(', ', $userBios); // Объединить биографии пользователей в строку
+        $this->selectedUserLink = implode(', ', $userLinks); // Объединить ссылки пользователей в строку
+        $this->selectedUserAddress = implode(', ', $userAddresses); // Объединить адреса пользователей в строку
+    }
 
     private function resetFields()
     {

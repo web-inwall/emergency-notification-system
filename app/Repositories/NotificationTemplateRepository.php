@@ -2,33 +2,48 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\NotificationTemplateRepositoryInterface;
-use App\Models\Notification;
 use App\Models\User;
+use App\Models\Notification;
+use Illuminate\Database\Eloquent\Collection;
+use App\Interfaces\NotificationTemplateRepositoryInterface;
 
 class NotificationTemplateRepository implements NotificationTemplateRepositoryInterface
 {
-    public function getDataTemplates()
+    public function getDataTemplates(): array
     {
-        $templates = Notification::join('notification__users', 'notifications.id', '=', 'notification__users.notification_id')
-            ->get(['notifications.id', 'notifications.id', 'notifications.template_name', 'notifications.message', 'notification__users.user_id']);
+        $templates = $this->getNotificationTemplates();
 
+        $formattedTemplates = $this->formatTemplates($templates);
+
+        return ['templates' => $formattedTemplates];
+    }
+
+    private function getNotificationTemplates(): Collection
+    {
+        return Notification::join('notification__users', 'notifications.id', '=', 'notification__users.notification_id')
+            ->get(['notifications.id', 'notifications.id', 'notifications.template_name', 'notifications.message', 'notification__users.user_id']);
+    }
+
+    private function formatTemplates(Collection $templates): array
+    {
         $formattedTemplates = [];
 
         foreach ($templates as $template) {
             $userIds = explode(',', $template->user_id);
 
-            $users = User::whereIn('id', $userIds)->get(['bio', 'link', 'address']);
+            $users = $this->getUsersByIds($userIds);
 
-            $formattedTemplate = [
-                'id' => $template->id,
+            $formattedTemplates[] = [
                 'template_name' => $template->template_name,
                 'message' => $template->message,
                 'users' => $users->toArray()
             ];
-
-            $formattedTemplates[] = $formattedTemplate;
         }
-        return $formattedTemplates;  //содержит массив массивов информации о шаблоне: имя, адрес и тд.
+        return $formattedTemplates;
+    }
+
+    private function getUsersByIds(array $userIds): Collection
+    {
+        return User::whereIn('id', $userIds)->get(['bio', 'link', 'address']);
     }
 }

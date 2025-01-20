@@ -17,9 +17,11 @@ use App\Repositories\NotificationRepository;
 use App\Repositories\NotificationUserRepository;
 
 use App\Interfaces\NotificationRepositoryInterface;
-use App\Repositories\NotificationTemplateRepository;
+use App\Http\Controllers\SendNotificationController;
 
+use App\Repositories\NotificationTemplateRepository;
 use App\Interfaces\NotificationUserRepositoryInterface;
+use App\Interfaces\SendNotificationControllerInterface;
 use App\Interfaces\NotificationTemplateRepositoryInterface;
 
 class AppServiceProvider extends ServiceProvider
@@ -35,6 +37,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(NotificationRepositoryInterface::class, NotificationRepository::class);
         $this->app->bind(NotificationUserRepositoryInterface::class, NotificationUserRepository::class);
         $this->app->bind(NotificationTemplateRepositoryInterface::class, NotificationTemplateRepository::class);
+        $this->app->bind(SendNotificationControllerInterface::class, SendNotificationController::class);
     }
 
     /**
