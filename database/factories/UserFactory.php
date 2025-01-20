@@ -2,43 +2,46 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
  */
 class UserFactory extends Factory
 {
-    /**
-     * The current password being used by the factory.
-     */
-    protected static ?string $password;
+    protected $model = User::class;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition(): array
+    public function definition()
     {
+
+        $firstName = $this->faker->firstName();
+        $lastName = $this->faker->lastName();
+        $middleName = $this->faker->firstName();
+
+        $bio = $firstName . ' ' . $lastName . ' ' . $middleName;
+
+        $link = $this->faker->randomElement(['telegram', 'sms', 'gmail']);
+
+        $address = '';
+
+        if ($link === 'telegram') {
+            $address = "@" . $firstName;
+        } elseif ($link === 'sms') {
+            $address = $this->faker->phoneNumber;
+        } elseif ($link === 'gmail') {
+            $address = $this->faker->email;
+        }
+
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
-            'remember_token' => Str::random(10),
+            'bio' => $bio,
+            'link' => $link,
+            'address' => $address,
         ];
     }
 
-    /**
-     * Indicate that the model's email address should be unverified.
-     */
-    public function unverified(): static
+    public static function factory()
     {
-        return $this->state(fn(array $attributes) => [
-            'email_verified_at' => null,
-        ]);
+        return new UserFactory();
     }
 }

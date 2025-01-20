@@ -8,10 +8,8 @@
     @livewireStyles
 </head>
 <body>
-    <div class="container">
-        <button id="deleteButton">Удалить данные</button>
-        
-        {{-- <button id="deleteButton" data-delete-route="{{ route('home.delete') }}">Удалить данные</button> --}}
+    <div class="container">        
+        <button id="deleteButton" data-delete-route="{{ route('home.delete') }}">Удалить данные</button>
 
         <button id="showTemplatesBtn" onclick="showAllTemplates()">Показать все шаблоны</button>
         
