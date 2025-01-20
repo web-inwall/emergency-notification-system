@@ -1,0 +1,58 @@
+.container {
+    padding: 20px;
+}
+
+#userTable {
+    width: 900px;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+#userTable th,
+#userTable td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#userTable th,
+#userTable td {
+    border: 1px solid black;
+    padding: 8px;
+}
+
+
+#uploadForm {
+    max-width: 400px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+#uploadForm input[type="file"],
+#uploadForm input[type="text"],
+#uploadForm textarea {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#uploadForm textarea {
+    height: 100px;
+}
+
+#uploadForm button {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#uploadForm button:hover {
+    background-color: #45a049;
+}
