@@ -10,6 +10,7 @@ use App\Interfaces\NotificationUserRepositoryInterface;
 use App\Interfaces\UserRepositoryInterface;
 use Exception;
 
+
 class MainController extends Controller implements MainControllerInterface
 {
     private $fileReader;
@@ -29,6 +30,8 @@ class MainController extends Controller implements MainControllerInterface
 
     public function manageUserNotificationWorkflow(FormValidationRequest $request)
     {
+
+
         $file = $request->file('file'); // получаем информацию о файле
         $templateName = $request->input('template_name'); // получаем имя шаблона
         $message = $request->input('message'); // получаем введенное сообщение
@@ -48,7 +51,6 @@ class MainController extends Controller implements MainControllerInterface
             $this->notificationUserRepository->createNotificationUsers($data, $groupNotification);
 
             // Вывод сохраненного шаблона
-
 
             // Отправка уведомлений пользователям
             // $this->notification->sendNotifications($templateName, $message, $data);

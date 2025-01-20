@@ -29,7 +29,6 @@ class NotificationTemplateRepository implements NotificationTemplateRepositoryIn
 
             $formattedTemplates[] = $formattedTemplate;
         }
-
-        return $formattedTemplates;
+        return $formattedTemplates;  //содержит массив массивов информации о шаблоне: имя, адрес и тд.
     }
 }

@@ -16,7 +16,7 @@ class NotificationTemplateController extends Controller implements NotificationT
 
     public function showAllTemplates()
     {
-        $templates = $this->notificationTemplateRepository->getDataTemplates();
+        $templates = $this->notificationTemplateRepository->getDataTemplates();  //содержит массив массивов информации о шаблоне: имя, адрес и тд.
 
         return view('livewire.show-all-templates', compact('templates'));
     }

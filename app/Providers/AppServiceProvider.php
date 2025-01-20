@@ -2,24 +2,24 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-
 use App\Services\FileReaderService;
-use App\Interfaces\FileReaderInterface;
 
 use App\Repositories\UserRepository;
+use App\Interfaces\FileReaderInterface;
+
+use Illuminate\Support\ServiceProvider;
+use App\Http\Controllers\MainController;
+
+use App\Interfaces\MainControllerInterface;
 use App\Interfaces\UserRepositoryInterface;
 
-use App\Http\Controllers\MainController;
-use App\Interfaces\MainControllerInterface;
-
 use App\Repositories\NotificationRepository;
-use App\Interfaces\NotificationRepositoryInterface;
-
 use App\Repositories\NotificationUserRepository;
-use App\Interfaces\NotificationUserRepositoryInterface;
 
+use App\Interfaces\NotificationRepositoryInterface;
 use App\Repositories\NotificationTemplateRepository;
+
+use App\Interfaces\NotificationUserRepositoryInterface;
 use App\Interfaces\NotificationTemplateRepositoryInterface;
 
 class AppServiceProvider extends ServiceProvider

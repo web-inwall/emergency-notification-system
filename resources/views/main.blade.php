@@ -4,6 +4,8 @@
 <head>
     <title>Главная</title>
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    @livewireStyles
 </head>
 <body>
     <div class="container">
@@ -12,13 +14,11 @@
         <button id="showTemplatesBtn" onclick="showAllTemplates()">Показать все шаблоны</button>
         <div id="allTemplates" style="display: none">
             <h3>Все шаблоны:</h3>
-            <ul>
-                @livewire('App\Livewire\ShowAllTemplates')
-            </ul>
+            @livewire('show-all-templates')
         </div>
         
-    
-    
+
+
         <h3>Внесите получателей и введите сообщение</h3>
         <form id="uploadForm" action="{{ route('main.manageUserNotificationWorkflow') }}" method="POST" enctype="multipart/form-data">
             @csrf
@@ -44,9 +44,6 @@
             </table>
         </div>
     </div>
-    
-
-    
 
     <script>
         document.getElementById('file').addEventListener('change', function(event) {
@@ -121,6 +118,7 @@
         }
     </script>
 
+        @livewireScripts
     </body>
 </html>
 
