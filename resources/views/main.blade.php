@@ -12,23 +12,8 @@
         <button onclick="deleteUsers()">Удалить все данные из базы</button>
     
         <button id="showTemplatesBtn" onclick="showAllTemplates()">Показать все шаблоны</button>
-        <div id="allTemplates" style="display: none">
-            <h3>Все шаблоны:</h3>
-            @livewire('show-all-templates')
-        </div>
         
-
-
-        <h3>Внесите получателей и введите сообщение</h3>
-        <form id="uploadForm" action="{{ route('main.manageUserNotificationWorkflow') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-        
-            <input type="file" name="file" id="file" required>
-            <input type="text" name="template_name" placeholder="Имя шаблона отправки" required>
-            
-            <textarea name="message" placeholder="Введите сообщение" required></textarea>
-            <button type="submit">Отправить</button>
-        </form>
+        @livewire('show-all-templates')
     
         <div id="preview" style="display: none">
             <h3>Загруженные пользователи:</h3>
@@ -117,6 +102,7 @@
             document.getElementById('allTemplates').style.display = 'block';
         }
     </script>
+
 
         @livewireScripts
     </body>
