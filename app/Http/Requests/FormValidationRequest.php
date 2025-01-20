@@ -16,7 +16,7 @@ class FormValidationRequest extends FormRequest
     {
         return ([
             'file' => 'required|file|max:2048',
-            'template_name' => 'required|string|max:255',
+            'template_name' => 'required|string|max:255|unique:notifications',
             'message' => 'required|string|max:100000',
         ]);
     }
