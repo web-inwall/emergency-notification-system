@@ -22,7 +22,7 @@
         @endif
             <input type="text" name="template_name" placeholder="Имя шаблона отправки" wire:model="selectedTemplateName" required @if(!empty($selectedTemplateName)) readonly @endif>
             <textarea name="message" placeholder="Введите сообщение" wire:model="selectedTemplateMessage" required></textarea>
-<input type="hidden" name="userMessage">
+        <input type="hidden" name="userMessage">
 
 
             <button type="submit">Отправить</button>
