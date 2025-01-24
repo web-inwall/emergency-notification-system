@@ -11,22 +11,15 @@ use Illuminate\Queue\SerializesModels;
 class Email extends Mailable
 {
     use Queueable, SerializesModels;
-    private $name;
-    private $username;
-    private $message;
+    private $userName;
+    private $userMessage;
 
-    /**
-     * Create a new message instance.
-     */
-    public function __construct($name, $message)
+    public function __construct($userName, $userMessage)
     {
-        $this->name = $name;
-        $this->message = $message;
+        $this->userName = $userName;
+        $this->userMessage = $userMessage;
     }
 
-    /**
-     * Get the message envelope.
-     */
     public function envelope(): Envelope
     {
         return new Envelope(
@@ -34,27 +27,14 @@ class Email extends Mailable
         );
     }
 
-    /**
-     * Get the message content definition.
-     */
     public function content(): Content
     {
         return new Content(
             view: 'emails.message',
             with: [
-                'name' => $this->name,
-                'message' => $this->message,
+                'userName' => $this->userName,
+                'userMessage' => $this->userMessage,
             ],
         );
-    }
-
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-     */
-    public function attachments(): array
-    {
-        return [];
     }
 }

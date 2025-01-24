@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Mail\Email;
 use Illuminate\Support\Facades\Mail;
-use App\Interfaces\EmailInterfaceController;
 use App\Interfaces\SendNotificationControllerInterface;
 use App\Interfaces\NotificationTemplateRepositoryInterface;
 
@@ -15,20 +15,29 @@ class SendNotificationController extends Controller implements SendNotificationC
     protected $data;
     protected $selectedTemplateUsers;
     protected $message;
-    protected $arrayUsersGmail;
+    protected $arrayAllSendingMethod;
     protected $name;
+    protected $users;
     protected $recipient;
 
-    // protected $emailInterfaceController;
+    protected $arrayUsersSMS = [];
+    protected $arrayUsersTelegram = [];
+    protected $arrayUsersGmail = [];
 
     public function __construct(NotificationTemplateRepositoryInterface $notificationTemplateRepository)
     {
         $this->notificationTemplateRepository = $notificationTemplateRepository;
     }
 
+    
+
+
     public function processingFormData($data, $templateName, $message)
-    {
-        dump($templateName, $message, $data['data']);
+    {        
+        $this->users = $data['data'];
+        $this->message = $message;
+
+        $this->checkingSendingMethodProcessing();
     }
 
 
@@ -36,69 +45,101 @@ class SendNotificationController extends Controller implements SendNotificationC
     {
         $response = $this->notificationTemplateRepository->getDataTemplates();
         $this->templates = $response['templates'];
-
         $selectedTemplate = collect($this->templates)->firstWhere('template_name', $templateName);
 
-
-        $this->selectedTemplateUsers = $selectedTemplate['users'];
-
-        $this->arrayUsersGmail = $this->CheckingSendingMethod($this->selectedTemplateUsers);
-
+        $this->users = $selectedTemplate['users'];
+        
         $this->message = $message;
+        
+        // $this->data = [
+        //     'users' => $this->users,
+        //     'message' => $this->message,
+        // ];
 
-        $this->data = [
-            'users' => $this->arrayUsersGmail,
-            'message' => $this->message,
-        ];
-
-        $this->sendGmail();    
+        $this->checkingSendingMethodProcessing();
     }
+
+    public function checkingSendingMethodProcessing() {
+        
+        $this->CheckingSendingMethod($this->users);
+    
+                if(!empty($this->arrayAllSendingMethod)) {
+                    if(!empty($this->arrayUsersGmail)) {
+                        $this->sendGmail($this->arrayUsersGmail);
+                    }
+        
+                    if(!empty($this->arrayUsersSMS)) {
+                        $this->sendSMS($this->arrayUsersSMS);
+                    }
+        
+                    if(!empty($this->arrayUsersTelegram)) {
+                        $this->sendTelegram($this->arrayUsersTelegram);
+                    }
+                }
+            // }
+        // }
+
+    }
+
 
     public function CheckingSendingMethod($users) {
 
-        $arrayUsersGmail = []; 
-
+        $arrayAllSendingMethod = [];
+        
         foreach($users as $user) {
             if($user['link'] === 'gmail') {
-                $arrayUsersGmail[] = $user;
+                $this->arrayUsersGmail[] = $user;
+            }
+        
+            elseif($user['link'] === 'sms') {
+                $this->arrayUsersSMS[] = $user;
+            }
+        
+            elseif($user['link'] === 'telegram') {
+                $this->arrayUsersTelegram[] = $user;
             }
         }
 
-        return $arrayUsersGmail;
+        $this->arrayAllSendingMethod[] = $this->arrayUsersGmail;
+        $this->arrayAllSendingMethod[] = $this->arrayUsersSMS;
+        $this->arrayAllSendingMethod[] = $this->arrayUsersTelegram;
+        
+        return $this->arrayAllSendingMethod;
+
     }
 
     
-    public function sendGmail() {
-        // echo "<pre>";
-        // print_r($this->data);
-        // echo "</pre>";
+    public function sendGmail($arrayUsersGmail) {
 
-        
-        foreach ($this->data['users'] as $user) {
+        foreach ($arrayUsersGmail as $user) {
             $this->name [] = $user['bio'];
             $this->recipient [] = $user['address'];
         }
-        
-
-        echo "<pre>";
-        print_r($this->recipient);
-        print_r($this->name);
-        print_r($this->message);
-        echo "</pre>";
-
 
         foreach ($this->recipient as $key => $recipient) {
-            $name = $this->name[$key] ?? ''; // Получаем имя получателя из массива $this->name
-            $message = $this->message; // Используем одно сообщение для всех получателей
+            $userName = $this->name[$key] ?? ''; // Получаем имя получателя из массива $this->name
+            $userMessage = strval($this->message); // Используем одно сообщение для всех получателей
         
-            // Обработка только строковых значений перед передачей в htmlspecialchars()
-            $name = is_string($name) ? htmlspecialchars($name) : '';
-            $message = is_string($message) ? htmlspecialchars($message) : '';
-        
-            Mail::to($recipient)
-                ->send(new Email($name, $message));
+            try {
+                Mail::to($recipient)
+                    ->send(new Email($userName, $userMessage));
+                
+                // Сообщение об успешной отправке
+                echo "Письмо успешно отправлено на адрес: $recipient<br>";
+            } catch (Exception $e) {
+                // Сообщение об ошибке
+                echo "Ошибка при отправке письма на адрес: $recipient. Ошибка: " . $e->getMessage() . "<br>";
+            }
         }
+    }
 
+
+    public function sendSMS($arrayUsersSMS) {
+        echo 'Отправка на SMS';
+    }
+
+    public function sendTelegram($arrayUsersTelegram) {
+        echo 'Отправка на Telegram';
     }
 }
 
