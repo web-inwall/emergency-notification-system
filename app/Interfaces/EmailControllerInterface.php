@@ -2,7 +2,7 @@
 
 namespace App\Interfaces;
 
-interface EmailInterfaceController
+interface EmailControllerInterface
 {
     public function sendEmail();
 }

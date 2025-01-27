@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Mail\Email;
 use Illuminate\Support\Facades\Mail;
+use App\Interfaces\EmailControllerInterface;
 use App\Http\Controllers\SendNotificationController;
 use App\Interfaces\SendNotificationControllerInterface;
 
-class EmailController extends Controller 
+class EmailController extends Controller implements EmailControllerInterface
 {
     protected $messageForSend;
 

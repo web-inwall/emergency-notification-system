@@ -10,15 +10,17 @@ use App\Interfaces\FileReaderInterface;
 use Illuminate\Support\ServiceProvider;
 use App\Http\Controllers\MainController;
 
+use App\Services\SendNotificationService;
 use App\Interfaces\MainControllerInterface;
+
 use App\Interfaces\UserRepositoryInterface;
-
 use App\Repositories\NotificationRepository;
+
 use App\Repositories\NotificationUserRepository;
-
 use App\Interfaces\NotificationRepositoryInterface;
-use App\Http\Controllers\SendNotificationController;
 
+use App\Http\Controllers\SendNotificationController;
+use App\Interfaces\SendNotificationServiceInterface;
 use App\Repositories\NotificationTemplateRepository;
 use App\Interfaces\NotificationUserRepositoryInterface;
 use App\Interfaces\SendNotificationControllerInterface;
@@ -38,6 +40,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(NotificationUserRepositoryInterface::class, NotificationUserRepository::class);
         $this->app->bind(NotificationTemplateRepositoryInterface::class, NotificationTemplateRepository::class);
         $this->app->bind(SendNotificationControllerInterface::class, SendNotificationController::class);
+        $this->app->bind(SendNotificationServiceInterface::class, SendNotificationService::class);
+
     }
 
     /**

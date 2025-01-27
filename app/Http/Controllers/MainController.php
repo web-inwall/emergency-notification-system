@@ -63,7 +63,7 @@ class MainController extends Controller implements MainControllerInterface
                     $this->notificationUserRepository->createNotificationUsers($data, $groupNotification);
 
                     // Отправка уведомлений пользователям
-                    $this->sendNotificationController->processingFormData($data, $templateName, $message);
+                    $this->sendNotificationController->processingFormData($data, $message);
 
                     // return response()->json(['message' => 'Выполнено'], 200);
                     // return redirect()->to('/');
