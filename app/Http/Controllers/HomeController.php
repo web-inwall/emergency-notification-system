@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Exception;
-use App\Models\Notification;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Repositories\DeleteDataRepository;
+use App\Interfaces\DeleteDataRepositoryInterface;
 
 class HomeController extends Controller
 {
@@ -14,26 +13,8 @@ class HomeController extends Controller
         return view('main');
     }
 
-    public function delete()
+    public function delete(DeleteDataRepositoryInterface $deleteDataRepository)
     {
-        DB::beginTransaction();
-
-        try {
-            // Удаление данных из таблицы 'users'
-            DB::table('users')->delete();
-
-            // Удаление данных из таблицы 'notification__users'
-            DB::table('notification__users')->delete();
-
-            // Удаление данных из таблицы 'notifications'
-            DB::table('notifications')->delete();
-
-            DB::commit();
-
-            return response()->json(['message' => 'Данные успешно удалены из всех таблиц'], 200);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return response()->json(['error' => 'Произошла ошибка при удалении данных: ' . $e->getMessage()], 500);
-        }
+        $deleteDataRepository->deleteDataUsers();
     }
 }

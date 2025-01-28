@@ -11,14 +11,16 @@ use Illuminate\Support\ServiceProvider;
 use App\Http\Controllers\MainController;
 
 use App\Services\SendNotificationService;
+use App\Repositories\DeleteDataRepository;
+
 use App\Interfaces\MainControllerInterface;
-
 use App\Interfaces\UserRepositoryInterface;
+
 use App\Repositories\NotificationRepository;
-
 use App\Repositories\NotificationUserRepository;
-use App\Interfaces\NotificationRepositoryInterface;
 
+use App\Interfaces\DeleteDataRepositoryInterface;
+use App\Interfaces\NotificationRepositoryInterface;
 use App\Http\Controllers\SendNotificationController;
 use App\Interfaces\SendNotificationServiceInterface;
 use App\Repositories\NotificationTemplateRepository;
@@ -41,6 +43,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(NotificationTemplateRepositoryInterface::class, NotificationTemplateRepository::class);
         $this->app->bind(SendNotificationControllerInterface::class, SendNotificationController::class);
         $this->app->bind(SendNotificationServiceInterface::class, SendNotificationService::class);
+        $this->app->bind(DeleteDataRepositoryInterface::class, DeleteDataRepository::class);
 
     }
 

@@ -11,10 +11,6 @@ use App\Interfaces\NotificationTemplateRepositoryInterface;
 class SendNotificationService implements SendNotificationServiceInterface {
     
     protected $notificationTemplateRepository;
-    // protected $templates;
-    // protected $data;
-    // protected $selectedTemplateUsers;
-    // protected $message;
 
     protected $arrayAllSendingMethod;
     protected $name;
