@@ -1,13 +1,14 @@
 <?php
+
 namespace App\Repositories;
 
+use App\Interfaces\DeleteDataRepositoryInterface;
 use Exception;
 use Illuminate\Support\Facades\DB;
-use App\Interfaces\DeleteDataRepositoryInterface;
 
-class DeleteDataRepository implements DeleteDataRepositoryInterface 
+class DeleteDataRepository implements DeleteDataRepositoryInterface
 {
-    public function deleteDataUsers() 
+    public function deleteDataUsers()
     {
         DB::beginTransaction();
 
@@ -26,7 +27,8 @@ class DeleteDataRepository implements DeleteDataRepositoryInterface
             return response()->json(['message' => 'Данные успешно удалены из всех таблиц'], 200);
         } catch (Exception $e) {
             DB::rollBack();
-            return response()->json(['error' => 'Произошла ошибка при удалении данных: ' . $e->getMessage()], 500);
+
+            return response()->json(['error' => 'Произошла ошибка при удалении данных: '.$e->getMessage()], 500);
         }
     }
 }

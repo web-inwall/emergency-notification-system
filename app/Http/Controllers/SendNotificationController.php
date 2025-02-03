@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Exception;
-use App\Interfaces\SendNotificationServiceInterface;
 use App\Interfaces\SendNotificationControllerInterface;
+use App\Interfaces\SendNotificationServiceInterface;
 
 class SendNotificationController extends Controller implements SendNotificationControllerInterface
 {
@@ -25,14 +24,10 @@ class SendNotificationController extends Controller implements SendNotificationC
         $this->dataHelper($templateName, $message);
     }
 
-    public function dataHelper($data, $message) 
+    public function dataHelper($data, $message)
     {
         $this->sendNotificationService->setData($data, $message);
 
         $this->sendNotificationService->checkingSendingMethodProcessing();
     }
-
 }
-
-
-

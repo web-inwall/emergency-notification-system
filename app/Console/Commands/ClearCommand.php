@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 class ClearCommand extends Command
 {
     protected $signature = 'clear';
+
     protected $description = 'Clear routes, cache, and config';
 
     public function handle()
@@ -16,7 +17,6 @@ class ClearCommand extends Command
         $this->call('config:clear');
         $this->call('view:clear');
         $this->call('view:cache');
-
 
         $this->info('Routes, Cache, Config and Views cleared successfully!');
     }

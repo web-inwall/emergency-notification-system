@@ -11,7 +11,9 @@ use Illuminate\Queue\SerializesModels;
 class Email extends Mailable
 {
     use Queueable, SerializesModels;
+
     private $userName;
+
     private $userMessage;
 
     public function __construct($userName, $userMessage)

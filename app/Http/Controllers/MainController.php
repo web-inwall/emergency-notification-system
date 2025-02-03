@@ -2,25 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use Exception;
-use Illuminate\Http\Request;
-use App\Interfaces\FileReaderInterface;
-use Illuminate\Support\Facades\Validator;
-use App\Interfaces\MainControllerInterface;
-use App\Interfaces\UserRepositoryInterface;
 use App\Http\Requests\FormValidationRequest;
-use Illuminate\Validation\ValidationException;
 use App\Http\Requests\FullFormValidationRequest;
+use App\Interfaces\FileReaderInterface;
+use App\Interfaces\MainControllerInterface;
 use App\Interfaces\NotificationRepositoryInterface;
 use App\Interfaces\NotificationUserRepositoryInterface;
 use App\Interfaces\SendNotificationControllerInterface;
+use App\Interfaces\UserRepositoryInterface;
+use Exception;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class MainController extends Controller implements MainControllerInterface
 {
     private $fileReader;
+
     private $userRepository;
+
     private $notificationRepository;
+
     private $notificationUserRepository;
+
     private $sendNotificationController;
 
     public function __construct(FileReaderInterface $fileReader, UserRepositoryInterface $userRepository, NotificationRepositoryInterface $notificationRepository, NotificationUserRepositoryInterface $notificationUserRepository, SendNotificationControllerInterface $sendNotificationController)
@@ -38,7 +41,7 @@ class MainController extends Controller implements MainControllerInterface
 
         $message = $request->has('userMessage') ? $request->input('userMessage') : $request->input('selectedTemplateMessage');
 
-        $requestAllDataForm = new FullFormValidationRequest();
+        $requestAllDataForm = new FullFormValidationRequest;
 
         $validator = Validator::make($request->all(), $requestAllDataForm->rules());
 

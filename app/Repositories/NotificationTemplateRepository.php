@@ -2,10 +2,10 @@
 
 namespace App\Repositories;
 
-use App\Models\User;
-use App\Models\Notification;
-use Illuminate\Database\Eloquent\Collection;
 use App\Interfaces\NotificationTemplateRepositoryInterface;
+use App\Models\Notification;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 
 class NotificationTemplateRepository implements NotificationTemplateRepositoryInterface
 {
@@ -36,9 +36,10 @@ class NotificationTemplateRepository implements NotificationTemplateRepositoryIn
             $formattedTemplates[] = [
                 'template_name' => $template->template_name,
                 'message' => $template->message,
-                'users' => $users->toArray()
+                'users' => $users->toArray(),
             ];
         }
+
         return $formattedTemplates;
     }
 

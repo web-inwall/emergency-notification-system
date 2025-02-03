@@ -15,7 +15,7 @@ class FileReaderService implements FileReaderInterface
 
         if ($handle !== false) {
             while (($row = fgetcsv($handle)) !== false) {
-                if (count($row) == 3 && !empty(trim($row[0])) && !empty(trim($row[1])) && !empty(trim($row[2]))) {
+                if (count($row) == 3 && ! empty(trim($row[0])) && ! empty(trim($row[1])) && ! empty(trim($row[2]))) {
                     $data[] = [
                         'bio' => trim($row[0]),
                         'link' => trim($row[1]),

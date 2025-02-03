@@ -2,31 +2,25 @@
 
 namespace App\Providers;
 
-use App\Services\FileReaderService;
-
-use App\Repositories\UserRepository;
-use App\Interfaces\FileReaderInterface;
-
-use Illuminate\Support\ServiceProvider;
 use App\Http\Controllers\MainController;
-
-use App\Services\SendNotificationService;
-use App\Repositories\DeleteDataRepository;
-
-use App\Interfaces\MainControllerInterface;
-use App\Interfaces\UserRepositoryInterface;
-
-use App\Repositories\NotificationRepository;
-use App\Repositories\NotificationUserRepository;
-
-use App\Interfaces\DeleteDataRepositoryInterface;
-use App\Interfaces\NotificationRepositoryInterface;
 use App\Http\Controllers\SendNotificationController;
-use App\Interfaces\SendNotificationServiceInterface;
-use App\Repositories\NotificationTemplateRepository;
+use App\Interfaces\DeleteDataRepositoryInterface;
+use App\Interfaces\FileReaderInterface;
+use App\Interfaces\MainControllerInterface;
+use App\Interfaces\NotificationRepositoryInterface;
+use App\Interfaces\NotificationTemplateRepositoryInterface;
 use App\Interfaces\NotificationUserRepositoryInterface;
 use App\Interfaces\SendNotificationControllerInterface;
-use App\Interfaces\NotificationTemplateRepositoryInterface;
+use App\Interfaces\SendNotificationServiceInterface;
+use App\Interfaces\UserRepositoryInterface;
+use App\Repositories\DeleteDataRepository;
+use App\Repositories\NotificationRepository;
+use App\Repositories\NotificationTemplateRepository;
+use App\Repositories\NotificationUserRepository;
+use App\Repositories\UserRepository;
+use App\Services\FileReaderService;
+use App\Services\SendNotificationService;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {

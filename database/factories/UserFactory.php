@@ -19,14 +19,14 @@ class UserFactory extends Factory
         $lastName = $this->faker->lastName();
         $middleName = $this->faker->firstName();
 
-        $bio = $firstName . ' ' . $lastName . ' ' . $middleName;
+        $bio = $firstName.' '.$lastName.' '.$middleName;
 
         $link = $this->faker->randomElement(['telegram', 'sms', 'gmail']);
 
         $address = '';
 
         if ($link === 'telegram') {
-            $address = "@" . $firstName;
+            $address = '@'.$firstName;
         } elseif ($link === 'sms') {
             $address = $this->faker->phoneNumber;
         } elseif ($link === 'gmail') {
@@ -42,6 +42,6 @@ class UserFactory extends Factory
 
     public static function factory()
     {
-        return new UserFactory();
+        return new UserFactory;
     }
 }

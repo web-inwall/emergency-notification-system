@@ -14,14 +14,16 @@ class NotificationFactory extends Factory
 
     public function definition()
     {
-        $word = "Шаблон №" . $this->faker->unique()->randomNumber();
+        $word = 'Шаблон №'.$this->faker->unique()->randomNumber();
+
         return [
             'template_name' => $word,
             'message' => $this->faker->sentence,
         ];
     }
+
     public static function factory()
     {
-        return new NotificationFactory();
+        return new NotificationFactory;
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 // СТАРЫЙ КОД
+
 namespace App\Repositories;
 
 use App\Interfaces\UserRepositoryInterface;
@@ -19,7 +20,7 @@ class UserRepository implements UserRepositoryInterface
             DB::commit(); // Фиксация транзакции при успешной вставке
         } catch (Exception $e) {
             DB::rollBack(); // Отмена транзакции при ошибке
-            throw new Exception("Данные не записались в БД: " . $e->getMessage());
+            throw new Exception('Данные не записались в БД: '.$e->getMessage());
         }
     }
 
@@ -31,6 +32,5 @@ class UserRepository implements UserRepositoryInterface
             ->toArray();
     }
 }
-
 
 // НОВЫЙ КОД

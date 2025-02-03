@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Interfaces;
 
-interface DeleteDataRepositoryInterface {
+interface DeleteDataRepositoryInterface
+{
     public function deleteDataUsers();
 }

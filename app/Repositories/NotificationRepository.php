@@ -15,6 +15,7 @@ class NotificationRepository implements NotificationRepositoryInterface
             'template_name' => $templateName,
             'message' => $message,
         ]);
+
         return $this->groupNotification;
     }
 }

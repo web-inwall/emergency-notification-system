@@ -2,9 +2,9 @@
 
 namespace App\Repositories;
 
-use App\Models\Notification_User;
-use App\Interfaces\UserRepositoryInterface;
 use App\Interfaces\NotificationUserRepositoryInterface;
+use App\Interfaces\UserRepositoryInterface;
+use App\Models\Notification_User;
 
 class NotificationUserRepository implements NotificationUserRepositoryInterface
 {
@@ -25,6 +25,7 @@ class NotificationUserRepository implements NotificationUserRepositoryInterface
     private function getUserIdsFromData($data)
     {
         $batchId = $data['batchId'];
+
         return $this->userRepository->getUserIdsByBatchId($batchId);
     }
 
@@ -35,7 +36,7 @@ class NotificationUserRepository implements NotificationUserRepositoryInterface
 
     private function saveNotificationRecipient($userIdsString, $groupNotification)
     {
-        $notificationRecipient = new Notification_User();
+        $notificationRecipient = new Notification_User;
         $notificationRecipient->user_id = $userIdsString;
         $notificationRecipient->notification_id = $groupNotification->id;
         $notificationRecipient->created_at = now();

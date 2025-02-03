@@ -2,9 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
-use App\Models\Notification;
 use App\Models\Notification_User;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,6 +20,6 @@ class Notification_UserFactory extends Factory
 
     public static function factory()
     {
-        return new Notification_UserFactory();
+        return new Notification_UserFactory;
     }
 }

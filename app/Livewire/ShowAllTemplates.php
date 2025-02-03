@@ -2,17 +2,23 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
 use App\Interfaces\NotificationTemplateRepositoryInterface;
+use Livewire\Component;
 
 class ShowAllTemplates extends Component
 {
     public $templates;
+
     public $selectedTemplateName = null;
+
     public $selectedTemplateMessage = null;
+
     public $selectedUserBio = null;
+
     public $selectedUserLink = null;
+
     public $selectedUserAddress = null;
+
     public $users;
 
     public function mount(NotificationTemplateRepositoryInterface $notificationTemplateRepository)
@@ -34,7 +40,6 @@ class ShowAllTemplates extends Component
             $this->selectedTemplateMessage = $selectedTemplate['message'];
 
             $this->loadUserData($selectedTemplate['users']); // Передача данных о пользователях для загрузки
-
 
         } else {
             $this->resetFields();

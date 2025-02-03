@@ -127,6 +127,12 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
+        'twilio' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/twilio.log'),
+            'level' => 'debug',
+        ],
+
     ],
 
 ];

@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Repositories\DeleteDataRepository;
 use App\Interfaces\DeleteDataRepositoryInterface;
 
 class HomeController extends Controller

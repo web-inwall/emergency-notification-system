@@ -2,20 +2,14 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use App\Models\Notification;
-use Illuminate\Database\Seeder;
-use App\Models\Notification_User;
-use Illuminate\Support\Facades\Hash;
-use Database\Factories\AllDataFactory;
 use Database\Factories\Notification_UserFactory;
-use Database\Factories\NotificationFactory;
 use Database\Factories\UserFactory;
 use Faker\Factory as FakerFactory;
+use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-
     public function run()
     {
         $faker = FakerFactory::create();
