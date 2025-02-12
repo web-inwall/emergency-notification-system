@@ -11,11 +11,6 @@ Route::delete('/delete', [HomeController::class, 'delete'])->name('home.delete')
 
 Route::post('/send-form', [MainController::class, 'manageUserNotificationWorkflow'])->name('main.manageUserNotificationWorkflow');
 
-Route::any(
-    '/twilio/send-test',
-    [TwilioSmsController::class, 'sendTest'])
-    ->name('twilio.send-test');
-
 Route::any('/twilio/webhook/status-changed', [TwilioSMSController::class, 'statusChanged'])->middleware(['is-twilio-request'])->name('api.twilio.status-changed');
 
 Route::any('/twilio/webhook/message-received', [TwilioSmsController::class, 'messageReceived'])

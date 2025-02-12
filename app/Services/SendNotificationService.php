@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Interfaces\NotificationTemplateRepositoryInterface;
 use App\Interfaces\SendNotificationServiceInterface;
+use App\Interfaces\TwilioSmsControllerInterface;
 use App\Mail\Email;
 use Exception;
 use Illuminate\Support\Facades\Mail;
@@ -15,6 +16,8 @@ class SendNotificationService implements SendNotificationServiceInterface
     protected $arrayAllSendingMethod;
 
     protected $name;
+
+    protected $userName;
 
     protected $users;
 
@@ -28,15 +31,18 @@ class SendNotificationService implements SendNotificationServiceInterface
 
     protected $templateName;
 
-    protected $arrayUsersSMS = [];
+    protected $twilioSmsController;
+
+    protected $arrayUsersSms = [];
 
     protected $arrayUsersTelegram = [];
 
     protected $arrayUsersGmail = [];
 
-    public function __construct(NotificationTemplateRepositoryInterface $notificationTemplateRepository)
+    public function __construct(NotificationTemplateRepositoryInterface $notificationTemplateRepository, TwilioSmsControllerInterface $twilioSmsController)
     {
         $this->notificationTemplateRepository = $notificationTemplateRepository;
+        $this->twilioSmsController = $twilioSmsController;
     }
 
     public function setData($data, $message)
@@ -75,17 +81,14 @@ class SendNotificationService implements SendNotificationServiceInterface
                 $this->sendGmail($this->arrayUsersGmail);
             }
 
-            if (! empty($this->arrayUsersSMS)) {
-                $this->sendSMS($this->arrayUsersSMS);
+            if (! empty($this->arrayUsersSms)) {
+                $this->sendSms($this->arrayUsersSms);
             }
 
             if (! empty($this->arrayUsersTelegram)) {
                 $this->sendTelegram($this->arrayUsersTelegram);
             }
         }
-        // }
-        // }
-
     }
 
     public function checkingUsersFields($users)
@@ -95,14 +98,14 @@ class SendNotificationService implements SendNotificationServiceInterface
             if ($user['link'] === 'gmail') {
                 $this->arrayUsersGmail[] = $user;
             } elseif ($user['link'] === 'sms') {
-                $this->arrayUsersSMS[] = $user;
+                $this->arrayUsersSms[] = $user;
             } elseif ($user['link'] === 'telegram') {
                 $this->arrayUsersTelegram[] = $user;
             }
         }
 
         $this->arrayAllSendingMethod[] = $this->arrayUsersGmail;
-        $this->arrayAllSendingMethod[] = $this->arrayUsersSMS;
+        $this->arrayAllSendingMethod[] = $this->arrayUsersSms;
         $this->arrayAllSendingMethod[] = $this->arrayUsersTelegram;
 
         return $this->arrayAllSendingMethod;
@@ -119,7 +122,7 @@ class SendNotificationService implements SendNotificationServiceInterface
 
         foreach ($this->recipient as $key => $recipient) {
             $userName = $this->name[$key] ?? ''; // Получаем имя получателя из массива $this->name
-            $userMessage = strval($this->message); // Используем одно сообщение для всех получателей
+            $userMessage = $this->message; // Используем одно сообщение для всех получателей
 
             try {
                 Mail::to($recipient)
@@ -134,9 +137,26 @@ class SendNotificationService implements SendNotificationServiceInterface
         }
     }
 
-    private function sendSMS($arrayUsersSMS)
+    private function sendSms($arrayUsersSms)
     {
-        echo 'Отправка на SMS';
+
+        foreach ($arrayUsersSms as $user) {
+
+            $recipient = $user['address'];
+            $userMessage = $user['bio'].': '.$this->message;
+
+            try {
+
+                $sendResult = app('TwilioSmsService')->sendMessage($recipient, $userMessage);
+                if (! isset($sendResult['success']) || ! $sendResult['success']) {
+                    throw new Exception(($sendResult['message'] ?? ''));
+                }
+
+                return $sendResult;
+            } catch (Exception $ex) {
+                return 'Send SMS Failed - '.$ex->getMessage();
+            }
+        }
     }
 
     private function sendTelegram($arrayUsersTelegram)

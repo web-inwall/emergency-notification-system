@@ -39,7 +39,9 @@ class MainController extends Controller implements MainControllerInterface
     {
         $templateName = $request->input('template_name');
 
-        $message = $request->has('userMessage') ? $request->input('userMessage') : $request->input('selectedTemplateMessage');
+        // $message = $request->has('userMessage') && $request->input('userMessage') !== null ? $request->input('userMessage') : $request->input('message');
+
+        $message = $request->input('message');
 
         $requestAllDataForm = new FullFormValidationRequest;
 
@@ -49,7 +51,6 @@ class MainController extends Controller implements MainControllerInterface
             if ($validator->passes()) {
 
                 $file = $request->file('file'); // получаем информацию о файле
-                // $message = $request->input('message'); // получаем введенное сообщение
                 $filePath = $file->getPathname();
 
                 try {
@@ -68,9 +69,6 @@ class MainController extends Controller implements MainControllerInterface
                     // Отправка уведомлений пользователям
                     $this->sendNotificationController->processingFormData($data, $message);
 
-                    // return response()->json(['message' => 'Выполнено'], 200);
-                    // return redirect()->to('/');
-
                 } catch (Exception $e) {
                     return response()->json(['error' => $e->getMessage()], 500);
                 }
@@ -78,7 +76,6 @@ class MainController extends Controller implements MainControllerInterface
                 throw ValidationException::withMessages($validator->errors()->messages());
             }
         } else {
-            // dd('данные введены автоматически');
             $this->sendNotificationController->processingTemplateData($templateName, $message);
         }
     }

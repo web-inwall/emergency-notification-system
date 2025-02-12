@@ -1,0 +1,22 @@
+name: Deploy to Hosting
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: deploy
+        uses: pressidium/lftp-mirror-action@v1
+        with:
+          host: ${{ secrets.SFTP_URL }}
+          port: ${{ secrets.SFTP_PORT }}
+          user: ${{ secrets.SFTP_USER }}
+          pass: ${{ secrets.SFTP_PASSWORD }}
+          remoteDir: '/var/www/fastuser/data/www/emergencynotificationsystem.tw1.su'

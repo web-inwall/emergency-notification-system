@@ -8,7 +8,7 @@ use Exception;
 use Illuminate\Support\Facades\Log;
 use Twilio\Rest\Client;
 
-class TwilioService
+class TwilioSmsService
 {
     /**
      * Twilio Client

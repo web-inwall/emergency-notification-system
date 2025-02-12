@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Interfaces\TwilioSmsControllerInterface;
 use App\Models\TwilioSms;
 use App\Models\TwilioSmsLog;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
-class TwilioSmsController extends Controller
+class TwilioSmsController extends Controller implements TwilioSmsControllerInterface
 {
     /**
      * This function is a public exposed route that handles twilio requests (from twilio) to inform status changes from messages
@@ -25,6 +26,8 @@ class TwilioSmsController extends Controller
      *   From: +1512xxxyyyy
      *   ApiVersion: 2010-04-01
      */
+    protected $messageNamesData;
+
     public function statusChanged(Request $request)
     {
 
@@ -128,27 +131,5 @@ class TwilioSmsController extends Controller
 
         // Proper TwiML Empty response (Do not auto reply SMS)
         return response('<Response></Response>', 200)->header('Content-Type', 'text/html');
-    }
-
-    /**
-     * Test sms send
-     *
-     * @return mixed
-     */
-    public function sendTest(Request $request)
-    {
-        try {
-
-            // Make sure it is E.164 formatting
-            $toPhoneNumber = '+79956125642';
-            $sendResult = app('TwilioService')->sendMessage($toPhoneNumber, 'Hi, this is a test');
-            if (! isset($sendResult['success']) || ! $sendResult['success']) {
-                throw new Exception(($sendResult['message'] ?? ''));
-            }
-
-            return $sendResult;
-        } catch (Exception $ex) {
-            return 'Send SMS Failed - '.$ex->getMessage();
-        }
     }
 }

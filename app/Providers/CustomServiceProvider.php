@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Services\Communications\TwilioService;
+use App\Services\Communications\TwilioSmsService;
 use Illuminate\Support\ServiceProvider;
 
 class CustomServiceProvider extends ServiceProvider
@@ -20,6 +20,6 @@ class CustomServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->app->bind('TwilioService', TwilioService::class);
+        $this->app->bind('TwilioSmsService', TwilioSmsService::class);
     }
 }
