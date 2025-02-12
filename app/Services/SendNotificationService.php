@@ -139,24 +139,25 @@ class SendNotificationService implements SendNotificationServiceInterface
 
     private function sendSms($arrayUsersSms)
     {
+        $results = []; // Массив для хранения результатов отправки сообщений
 
         foreach ($arrayUsersSms as $user) {
-
             $recipient = $user['address'];
             $userMessage = $user['bio'].': '.$this->message;
 
             try {
-
                 $sendResult = app('TwilioSmsService')->sendMessage($recipient, $userMessage);
                 if (! isset($sendResult['success']) || ! $sendResult['success']) {
                     throw new Exception(($sendResult['message'] ?? ''));
                 }
+                $results[] = $sendResult; // Сохраняем результат отправки сообщения
 
-                return $sendResult;
             } catch (Exception $ex) {
-                return 'Send SMS Failed - '.$ex->getMessage();
+                $results[] = 'Send SMS Failed - '.$ex->getMessage();
             }
         }
+
+        return $results; // Возвращаем результаты отправки сообщений для всех адресатов
     }
 
     private function sendTelegram($arrayUsersTelegram)
