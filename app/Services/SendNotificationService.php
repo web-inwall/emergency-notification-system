@@ -6,8 +6,10 @@ use App\Interfaces\NotificationTemplateRepositoryInterface;
 use App\Interfaces\SendNotificationServiceInterface;
 use App\Interfaces\TwilioSmsControllerInterface;
 use App\Mail\Email;
+use App\Notifications\TelegramNotification;
 use Exception;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 
 class SendNotificationService implements SendNotificationServiceInterface
 {
@@ -124,16 +126,16 @@ class SendNotificationService implements SendNotificationServiceInterface
             $userName = $this->name[$key] ?? ''; // Получаем имя получателя из массива $this->name
             $userMessage = $this->message; // Используем одно сообщение для всех получателей
 
-            try {
-                Mail::to($recipient)
-                    ->send(new Email($userName, $userMessage));
+            // try {
+            //     Mail::to($recipient)
+            //         ->send(new Email($userName, $userMessage));
 
-                // Сообщение об успешной отправке
-                echo "Письмо успешно отправлено на адрес: $recipient<br>";
-            } catch (Exception $e) {
-                // Сообщение об ошибке
-                echo "Ошибка при отправке письма на адрес: $recipient. Ошибка: ".$e->getMessage().'<br>';
-            }
+            //     // Сообщение об успешной отправке
+            //     echo "Письмо успешно отправлено на адрес: $recipient<br>";
+            // } catch (Exception $e) {
+            //     // Сообщение об ошибке
+            //     echo "Ошибка при отправке письма на адрес: $recipient. Ошибка: ".$e->getMessage().'<br>';
+            // }
         }
     }
 
@@ -145,23 +147,25 @@ class SendNotificationService implements SendNotificationServiceInterface
             $recipient = $user['address'];
             $userMessage = $user['bio'].': '.$this->message;
 
-            try {
-                $sendResult = app('TwilioSmsService')->sendMessage($recipient, $userMessage);
-                if (! isset($sendResult['success']) || ! $sendResult['success']) {
-                    throw new Exception(($sendResult['message'] ?? ''));
-                }
-                $results[] = $sendResult; // Сохраняем результат отправки сообщения
+            // try {
+            //     $sendResult = app('TwilioSmsService')->sendMessage($recipient, $userMessage);
+            //     if (! isset($sendResult['success']) || ! $sendResult['success']) {
+            //         throw new Exception(($sendResult['message'] ?? ''));
+            //     }
+            //     $results[] = $sendResult; // Сохраняем результат отправки сообщения
 
-            } catch (Exception $ex) {
-                $results[] = 'Send SMS Failed - '.$ex->getMessage();
-            }
+            // } catch (Exception $ex) {
+            //     $results[] = 'Send SMS Failed - '.$ex->getMessage();
+            // }
         }
 
         return $results; // Возвращаем результаты отправки сообщений для всех адресатов
     }
 
-    private function sendTelegram($arrayUsersTelegram)
+    public function sendTelegram($arrayUsersTelegram)
     {
-        echo 'Отправка на Telegram';
+
+        Notification::route('telegram', [])->notify(new TelegramNotification($this->message));
+
     }
 }
