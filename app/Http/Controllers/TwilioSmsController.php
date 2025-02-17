@@ -68,8 +68,8 @@ class TwilioSmsController extends Controller implements TwilioSmsControllerInter
 
             TwilioSmsLog::create($logData);
 
-        } catch (Exception $ex) {
-            Log::channel('twilio')->error($ex->getFile().' :: '.$ex->getMessage().' :: '.json_encode(($request->all() ?? [])));
+        } catch (Exception $e) {
+            Log::channel('twilio')->error($e->getFile().' :: '.$e->getMessage().' :: '.json_encode(($request->all() ?? [])));
         }
 
         return response(['success' => true], 200);
@@ -125,8 +125,8 @@ class TwilioSmsController extends Controller implements TwilioSmsControllerInter
             }
 
             TwilioSmsLog::create($logData);
-        } catch (Exception $ex) {
-            Log::channel('twilio')->error($ex->getFile().' :: '.$ex->getMessage().' :: '.json_encode(($request->all() ?? [])));
+        } catch (Exception $e) {
+            Log::channel('twilio')->error($e->getFile().' :: '.$e->getMessage().' :: '.json_encode(($request->all() ?? [])));
         }
 
         // Proper TwiML Empty response (Do not auto reply SMS)

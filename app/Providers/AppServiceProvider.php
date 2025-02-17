@@ -7,14 +7,20 @@ use App\Http\Controllers\SendNotificationController;
 use App\Http\Controllers\TwilioSmsController;
 use App\Interfaces\DeleteDataRepositoryInterface;
 use App\Interfaces\FileReaderInterface;
+use App\Interfaces\GmailRepositoryInterface;
 use App\Interfaces\MainControllerInterface;
 use App\Interfaces\NotificationRepositoryInterface;
 use App\Interfaces\NotificationTemplateRepositoryInterface;
 use App\Interfaces\NotificationUserRepositoryInterface;
 use App\Interfaces\SendNotificationControllerInterface;
 use App\Interfaces\SendNotificationServiceInterface;
+use App\Interfaces\TelegramRepositoryInterface;
+use App\Interfaces\TwilioRepositoryInterface;
 use App\Interfaces\TwilioSmsControllerInterface;
 use App\Interfaces\UserRepositoryInterface;
+use App\Repositories\Communications\GmailRepository;
+use App\Repositories\Communications\TelegramRepository;
+use App\Repositories\Communications\TwilioRepository;
 use App\Repositories\DeleteDataRepository;
 use App\Repositories\NotificationRepository;
 use App\Repositories\NotificationTemplateRepository;
@@ -42,6 +48,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(SendNotificationServiceInterface::class, SendNotificationService::class);
         $this->app->bind(DeleteDataRepositoryInterface::class, DeleteDataRepository::class);
         $this->app->bind(TwilioSmsControllerInterface::class, TwilioSmsController::class);
+        $this->app->bind(GmailRepositoryInterface::class, GmailRepository::class);
+        $this->app->bind(TwilioRepositoryInterface::class, TwilioRepository::class);
+        $this->app->bind(TelegramRepositoryInterface::class, TelegramRepository::class);
 
     }
 

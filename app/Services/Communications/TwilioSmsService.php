@@ -2,14 +2,16 @@
 
 namespace App\Services\Communications;
 
-use App\Models\TwilioSms;
-use App\Models\TwilioSmsLog;
+use App\Interfaces\TwilioRepositoryInterface;
+use App\Interfaces\TwilioSmsServiceInterface;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use Twilio\Rest\Client;
 
-class TwilioSmsService
+class TwilioSmsService implements TwilioSmsServiceInterface
 {
+    protected $twilioRepositoryInterface;
+
     /**
      * Twilio Client
      */
@@ -32,8 +34,10 @@ class TwilioSmsService
     /**
      * @throws \Twilio\Exceptions\ConfigurationException
      */
-    public function __construct()
+    public function __construct(TwilioRepositoryInterface $twilioRepositoryInterface)
     {
+        $this->twilioRepositoryInterface = $twilioRepositoryInterface;
+
         $this->sid = config('app.twilio.sid');
         $this->token = config('app.twilio.auth_token');
         $this->from_number = config('app.twilio.from_number');
@@ -62,14 +66,7 @@ class TwilioSmsService
             }
             $result['success'] = true;
 
-            $createdSms = TwilioSms::create([
-                'sid' => $result['data']['sid'],
-                'direction' => 'sent',
-                'from' => $result['data']['from'],
-                'to' => $result['data']['to'],
-                'status' => $result['data']['status'],
-                'body' => $result['data']['body'],
-            ]);
+            $createdSms = $this->twilioRepositoryInterface->createSms($result);
 
             $result['twilio_sms_id'] = $createdSms->id ?? null;
 
@@ -81,9 +78,9 @@ class TwilioSmsService
                 'details' => $result['data'],
             ]);
 
-        } catch (Exception $ex) {
+        } catch (Exception $e) {
             $result['success'] = false;
-            $result['message'] = $ex->getMessage();
+            $result['message'] = $e->getMessage();
             $result['data']['error_message'] = $result['message'];
             $this->log([
                 'twilio_sms_id' => null,
@@ -92,6 +89,9 @@ class TwilioSmsService
                 'new_status' => $result['data']['status'] ?? null,
                 'details' => $result['data'] ?? [],
             ]);
+
+            Log::channel('single')->error($e->getFile().' :: '.$e->getLine().' :: '.$e->getMessage());
+
         }
 
         return $result;
@@ -113,11 +113,11 @@ class TwilioSmsService
                 'details' => json_encode(($data['details'] ?? [])),
             ];
 
-            TwilioSmsLog::create($logData);
+            $this->twilioRepositoryInterface->createLogData($logData);
 
-        } catch (Exception $ex) {
+        } catch (Exception $e) {
             // NOTICE: Should probably create a log channel just for Twilio
-            Log::channel('single')->error($ex->getFile().' :: '.$ex->getLine().' :: '.$ex->getMessage());
+            Log::channel('single')->error($e->getFile().' :: '.$e->getLine().' :: '.$e->getMessage());
         }
 
     }

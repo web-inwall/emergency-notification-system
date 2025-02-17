@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Communications;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TwilioSmsLog extends Model
+class TelegramLog extends Model
 {
     use HasFactory;
 
-    protected $table = 'twilio_sms_log';
+    protected $table = 'telegram_log';
 
     protected $guarded = [];
 }
