@@ -1,9 +1,19 @@
 <div>
+
+    
+    <h2 class="title_upload">Загрузите CSV файл или выберите сохраненный шаблон</h2>
+
+    <div class="buttons">
+        <button id="showTemplatesBtn" onclick="showAllTemplates()">Сохранённые шаблоны</button>
+
+        <button onclick="deleteUsers()">Удалить все шаблоны</button>
+    </div>    
+
     <div id="allTemplates" style="display: none">
-        <h3>Все шаблоны:</h3>
+        <h3 class="h3_all">Все шаблоны:</h3>
         @if(!empty($templates))
             <select wire:change="selectTemplate($event.target.value)">
-                <option value="">Выберите шаблон</option>
+                <option value="">Сохранённые шаблоны</option>
                 @foreach($templates as $template)
                     <option value="{{ $template['template_name'] }}">{{ $template['template_name'] }}</option>
                 @endforeach
@@ -14,14 +24,17 @@
         @endif
     </div>
 
-    <h3>Внесите получателей и введите сообщение</h3>
+
+    
+
+
     <form id="uploadForm" action="{{ route('main.manageUserNotificationWorkflow') }}" method="POST" enctype="multipart/form-data">
         @csrf
         @if(empty($selectedTemplateName))
             <input type="file" name="file" id="file" required>
         @endif
-            <input type="text" name="template_name" placeholder="Имя шаблона отправки" wire:model="selectedTemplateName" required @if(!empty($selectedTemplateName)) readonly @endif>
-            <textarea name="message" placeholder="Введите сообщение" wire:model="selectedTemplateMessage" required></textarea>
+            <input type="text" name="template_name" placeholder="*Имя шаблона отправки" wire:model="selectedTemplateName" required @if(!empty($selectedTemplateName)) readonly @endif>
+            <textarea name="message" placeholder="*Введите сообщение" wire:model="selectedTemplateMessage" required></textarea>
         <input type="hidden" name="userMessage">
 
 
@@ -30,18 +43,9 @@
 
     @if(!empty($selectedTemplateName))
         <div>
-            <h3>Загруженные пользователи:</h3>
+            <h3 class="title_hidden">Загруженные пользователи:</h3>
             <table id="userTable">
-                {{-- <thead>
-                    @foreach($users as $user)
-                        <tr>
-                            <td>{{ $user['bio'] }}</td>
-                            <td>{{ $user['link'] }}</td>
-                            <td>{{ $user['address'] }}</td>
-                        </tr>
-                    @endforeach
-                </thead> --}}
-
+                
                 <thead>
                     @foreach($users as $index => $user)
                     @if($index < 15)

@@ -8,23 +8,21 @@
     @livewireStyles
 </head>
 <body>
-    <div class="container">        
-        <button onclick="deleteUsers()">Удалить все данные из базы</button>
-
-        <button id="showTemplatesBtn" onclick="showAllTemplates()">Показать все шаблоны</button>
+    <div class="container">  
+          
         
         @livewire('show-all-templates')
     
         <div id="preview" style="display: none">
-            <h3>Загруженные пользователи:</h3>
+            <h3>Получатели из шаблона:</h3>
             <table id="userTable">
-                <thead>
-                    <tr>
-                        <th>bio</th>
-                        <th>link</th>
-                        <th>address</th>
-                    </tr>
-                </thead>
+                    <thead>
+                        <tr>
+                            <th>bio</th>
+                            <th>link</th>
+                            <th>address</th>
+                        </tr>
+                    </thead>
                 <tbody></tbody>
             </table>
         </div>

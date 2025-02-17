@@ -1,5 +1,6 @@
 .container {
     padding: 20px;
+    text-align:center;  
 }
 
 #userTable {
@@ -28,6 +29,9 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: #f9f9f9;
+    margin: 0 auto;
+    padding-top: 10px;
+    margin-bottom: 30px;
 }
 
 #uploadForm input[type="file"],
@@ -55,4 +59,35 @@
 
 #uploadForm button:hover {
     background-color: #45a049;
+}
+
+button {
+    width: 200px; /* Установите нужную ширину кнопок здесь */
+    padding: 10px;
+    margin: 5px;
+    background-color:#7177f8;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color:#5257bd;
+}
+
+#userTable {
+    margin: 0 auto;
+}
+
+.buttons {
+    margin-bottom: 18px;
+}
+
+.h3_all {
+    margin-bottom: 11px;
+}
+
+#allTemplates {
+    margin-bottom: 20px;
 }
