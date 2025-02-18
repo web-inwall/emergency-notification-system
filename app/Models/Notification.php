@@ -18,6 +18,6 @@ class Notification extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'notification__users', 'notification_id', 'user_id');
+        return $this->belongsToMany(Recipient::class, 'notification__recipients', 'notification_id', 'wnt_id');
     }
 }

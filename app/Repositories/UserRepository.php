@@ -15,7 +15,7 @@ class UserRepository implements UserRepositoryInterface
         DB::beginTransaction(); // Начало транзакции
 
         try {
-            DB::table('users')->insert($data);
+            DB::table('recipients')->insert($data);
 
             DB::commit(); // Фиксация транзакции при успешной вставке
         } catch (Exception $e) {
@@ -26,7 +26,7 @@ class UserRepository implements UserRepositoryInterface
 
     public function getUserIdsByBatchId($batchId)
     {
-        return DB::table('users')
+        return DB::table('recipients')
             ->where('batch_id', $batchId)
             ->pluck('id')
             ->toArray();

@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
+use App\Models\Recipient;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class UserFactory extends Factory
 {
-    protected $model = User::class;
+    protected $model = Recipient::class;
 
     public function definition()
     {

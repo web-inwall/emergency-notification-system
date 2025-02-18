@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('notification__users', function (Blueprint $table) {
+        Schema::create('recipients', function (Blueprint $table) {
             $table->id();
-            $table->longText('user_id');
-            $table->foreignId('notification_id')->constrained()->onDelete('cascade');
+            $table->string('bio', 255);
+            $table->string('link', 255);
+            $table->string('address', 255);
+            $table->string('batch_id', 36)->index();
             $table->timestamps();
         });
     }
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('notification__users');
+        Schema::dropIfExists('recipients');
     }
 };

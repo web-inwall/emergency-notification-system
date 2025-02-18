@@ -2,16 +2,15 @@
 
 namespace Database\Factories;
 
-use App\Models\Notification_User;
-use App\Models\User;
+use App\Models\Notification_Recipient;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Notification_User>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Notification_Recipient>
  */
-class Notification_UserFactory extends Factory
+class Notification_RecipientFactory extends Factory
 {
-    protected $model = Notification_User::class;
+    protected $model = Notification_Recipient::class;
 
     public function definition()
     {
@@ -20,6 +19,6 @@ class Notification_UserFactory extends Factory
 
     public static function factory()
     {
-        return new Notification_UserFactory;
+        return new Notification_RecipientFactory;
     }
 }

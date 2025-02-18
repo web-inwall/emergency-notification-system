@@ -13,10 +13,8 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('bio', 255);
-            $table->string('link', 255);
-            $table->string('address', 255);
-            $table->string('batch_id', 36)->index();
+            $table->string('email')->unique();
+            $table->string('password');
             $table->timestamps();
         });
     }

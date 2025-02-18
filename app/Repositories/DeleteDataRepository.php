@@ -13,11 +13,11 @@ class DeleteDataRepository implements DeleteDataRepositoryInterface
         DB::beginTransaction();
 
         try {
-            // Удаление данных из таблицы 'users'
-            DB::table('users')->delete();
+            // Удаление данных из таблицы 'recipients'
+            DB::table('recipients')->delete();
 
-            // Удаление данных из таблицы 'notification__users'
-            DB::table('notification__users')->delete();
+            // Удаление данных из таблицы 'notification__recipients'
+            DB::table('notification__recipients')->delete();
 
             // Удаление данных из таблицы 'notifications'
             DB::table('notifications')->delete();

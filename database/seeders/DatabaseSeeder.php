@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Notification;
-use Database\Factories\Notification_UserFactory;
+use Database\Factories\Notification_RecipientFactory;
 use Database\Factories\UserFactory;
 use Faker\Factory as FakerFactory;
 use Illuminate\Database\Seeder;
@@ -20,11 +20,11 @@ class DatabaseSeeder extends Seeder
 
         $notification = Notification::factory()->create(); // Создание одной записи в таблице notifications
         $userIds = $users->pluck('id')->toArray(); // Получаем все id пользователей и преобразуем в массив
-        $userIdsString = implode(',', $userIds); // Преобразуем массив user_id в строку
+        $userIdsString = implode(',', $userIds); // Преобразуем массив recipient_id в строку
 
-        Notification_UserFactory::factory()->create([
+        Notification_RecipientFactory::factory()->create([
             'notification_id' => $notification->id,
-            'user_id' => $userIdsString,
+            'recipient_id' => $userIdsString,
         ]);
     }
 }

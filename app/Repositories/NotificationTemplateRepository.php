@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Interfaces\NotificationTemplateRepositoryInterface;
 use App\Models\Notification;
-use App\Models\User;
+use App\Models\Recipient;
 use Illuminate\Database\Eloquent\Collection;
 
 class NotificationTemplateRepository implements NotificationTemplateRepositoryInterface
@@ -20,8 +20,8 @@ class NotificationTemplateRepository implements NotificationTemplateRepositoryIn
 
     private function getNotificationTemplates(): Collection
     {
-        return Notification::join('notification__users', 'notifications.id', '=', 'notification__users.notification_id')
-            ->get(['notifications.id', 'notifications.template_name', 'notifications.message', 'notification__users.user_id']);
+        return Notification::join('notification__recipients', 'notifications.id', '=', 'notification__recipients.notification_id')
+            ->get(['notifications.id', 'notifications.template_name', 'notifications.message', 'notification__recipients.recipient_id']);
     }
 
     private function formatTemplates(Collection $templates): array
@@ -29,7 +29,7 @@ class NotificationTemplateRepository implements NotificationTemplateRepositoryIn
         $formattedTemplates = [];
 
         foreach ($templates as $template) {
-            $userIds = explode(',', $template->user_id);
+            $userIds = explode(',', $template->recipient_id);
 
             $users = $this->getUsersByIds($userIds);
 
@@ -45,6 +45,6 @@ class NotificationTemplateRepository implements NotificationTemplateRepositoryIn
 
     private function getUsersByIds(array $userIds): Collection
     {
-        return User::whereIn('id', $userIds)->get(['bio', 'link', 'address']);
+        return Recipient::whereIn('id', $userIds)->get(['bio', 'link', 'address']);
     }
 }
