@@ -214,7 +214,7 @@ class SendNotificationService implements SendNotificationServiceInterface
 
     private function errorMessage($e, $nameMethod)
     {
-        $errorMessage = "Ошибка при отправке сообщения в $nameMethod . Ошибка: ".$e->getMessage();
+        $errorMessage = "Ошибка при отправке сообщения в $nameMethod. Ошибка: ".$e->getMessage();
         Log::error($errorMessage);
         echo $errorMessage;
     }

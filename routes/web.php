@@ -2,17 +2,25 @@
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MainController;
-use App\Http\Controllers\TwilioSmsController;
+use App\Http\Controllers\TwilioSMSController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [HomeController::class, 'index'])->name('home.index');
+Route::get('/', [HomeController::class, 'index'])->middleware(['auth', 'verified'])->name('home.index');
 
-Route::delete('/delete', [HomeController::class, 'delete'])->name('home.delete');
+Route::middleware('auth')->group(function () {
 
-Route::post('/send-form', [MainController::class, 'manageUserNotificationWorkflow'])->name('main.manageUserNotificationWorkflow');
+    Route::get('/', [HomeController::class, 'index'])->name('home.index');
 
-Route::any('/twilio/webhook/status-changed', [TwilioSMSController::class, 'statusChanged'])->middleware(['is-twilio-request'])->name('api.twilio.status-changed');
+    Route::delete('/delete', [HomeController::class, 'delete'])->name('home.delete');
 
-Route::any('/twilio/webhook/message-received', [TwilioSmsController::class, 'messageReceived'])
-    ->middleware(['is-twilio-request'])
-    ->name('api.twilio.message-received');
+    Route::post('/send-form', [MainController::class, 'manageUserNotificationWorkflow'])->name('main.manageUserNotificationWorkflow');
+
+    Route::any('/twilio/webhook/status-changed', [TwilioSMSController::class, 'statusChanged'])->middleware(['is-twilio-request'])->name('api.twilio.status-changed');
+
+    Route::any('/twilio/webhook/message-received', [TwilioSmsController::class, 'messageReceived'])
+        ->middleware(['is-twilio-request'])
+        ->name('api.twilio.message-received');
+
+});
+
+require __DIR__.'/auth.php';

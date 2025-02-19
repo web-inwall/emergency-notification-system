@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('bio', 255);
             $table->string('link', 255);
             $table->string('address', 255);
-            $table->string('batch_id', 36)->index();
+            $table->string('batch_id', 36)->index()->default(0);
             $table->timestamps();
         });
     }
