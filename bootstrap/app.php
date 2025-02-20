@@ -15,14 +15,15 @@ return Application::configure(basePath: dirname(__DIR__))
         }
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->append(StartSession::class);
-
-        $middleware->validateCsrfTokens(except: [
-            'livewire/*',
-        ]);
-        $middleware->alias([
-            'is-twilio-request' => TwilioRequestIsValid::class,
-        ]);
+        $middleware->web(append: [
+            StartSession::class, // Добавляем промежуточное программное обеспечение StartSession к веб-промежуточному программному обеспечению
+        ])
+            ->validateCsrfTokens(except: [
+                'livewire/*',
+            ])
+            ->alias([
+                'is-twilio-request' => TwilioRequestIsValid::class,
+            ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

@@ -4,14 +4,14 @@
 
         <!-- Email Address -->
         <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
+            <x-input-label for="email" :value="__('Почта')" />
             <x-text-input id="email" class="block w-full mt-1" type="email" name="email" :value="old('email')" required autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
         <!-- Password -->
         <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+            <x-input-label for="password" :value="__('Пароль')" />
 
             <x-text-input id="password" class="block w-full mt-1"
                             type="password"
@@ -23,7 +23,7 @@
 
         <!-- Confirm Password -->
         <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+            <x-input-label for="password_confirmation" :value="__('Повторите пароль')" />
 
             <x-text-input id="password_confirmation" class="block w-full mt-1"
                             type="password"
@@ -34,11 +34,11 @@
 
         <div class="flex items-center justify-end mt-4">
             <a class="text-sm text-gray-600 underline rounded-md hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                {{ __('Уже зарегистрированы?') }}
+                {{ __('Есть аккаунт?') }}
             </a>
 
             <x-primary-button class="ms-4">
-                {{ __('Register') }}
+                {{ __('Регистрация') }}
             </x-primary-button>
         </div>
     </form>

@@ -5,9 +5,7 @@ use App\Http\Controllers\MainController;
 use App\Http\Controllers\TwilioSMSController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [HomeController::class, 'index'])->middleware(['auth', 'verified'])->name('home.index');
-
-Route::middleware('auth')->group(function () {
+Route::middleware(['web', 'auth'])->group(function () {
 
     Route::get('/', [HomeController::class, 'index'])->name('home.index');
 

@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "kerigard/laravel-lang-ru": "^2.0",
         "laravel-notification-channels/telegram": "^5.0",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
