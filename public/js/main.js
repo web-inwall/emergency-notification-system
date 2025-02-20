@@ -46,37 +46,33 @@ function displayCSVContent(content) {
     });
 }
 
+function showAllTemplates() {
+    document.getElementById('allTemplates').style.display = 'block';
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    var form = document.querySelector('form');
+    var selectedTemplateMessage = document.querySelector('textarea[name="message"]');
+    var hiddenUserMessage = document.querySelector('input[name="userMessage"]');
+
+    form.addEventListener('submit', function () {
+        hiddenUserMessage.value = selectedTemplateMessage.value;
+    });
+});
+
+let csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
 function deleteUsers() {
-    let deleteRoute = document.getElementById('deleteButton').dataset.deleteRoute;
-
     fetch(deleteRoute, {
         method: 'DELETE',
         headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            'X-CSRF-TOKEN': csrfToken
         }
     }).then(response => {
         // Обработка успешного удаления
-        console.log('Пользователи успешно удалены');
+        console.log('7Пользователи успешно удалены');
     }).catch(error => {
         // Обработка ошибки удаления
         console.error('Произошла ошибка при удалении пользователей');
     });
 }
-
-
-function showAllTemplates() {
-    document.getElementById('allTemplates').style.display = 'block';
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    var form = document.querySelector('form');
-    var selectedTemplateMessage = document.querySelector('textarea[name="message"]');
-    var hiddenUserMessage = document.querySelector('input[name="userMessage"]');
-
-    form.addEventListener('submit', function() {
-        hiddenUserMessage.value = selectedTemplateMessage.value;
-    });
-});
-
-
