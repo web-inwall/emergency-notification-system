@@ -11,4 +11,6 @@ interface SendNotificationServiceInterface
     public function getUsersForProcessingTemplateData();
 
     public function setData($data, $message);
+
+    public function processingSuccessfulFailedSend();
 }

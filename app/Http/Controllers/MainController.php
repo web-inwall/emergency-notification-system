@@ -9,6 +9,7 @@ use App\Interfaces\MainControllerInterface;
 use App\Interfaces\NotificationRepositoryInterface;
 use App\Interfaces\NotificationUserRepositoryInterface;
 use App\Interfaces\SendNotificationControllerInterface;
+use App\Interfaces\SendNotificationServiceInterface;
 use App\Interfaces\UserRepositoryInterface;
 use Exception;
 use Illuminate\Support\Facades\Validator;
@@ -26,13 +27,16 @@ class MainController extends Controller implements MainControllerInterface
 
     private $sendNotificationController;
 
-    public function __construct(FileReaderInterface $fileReader, UserRepositoryInterface $userRepository, NotificationRepositoryInterface $notificationRepository, NotificationUserRepositoryInterface $notificationUserRepository, SendNotificationControllerInterface $sendNotificationController)
+    private $sendNotificationService;
+
+    public function __construct(FileReaderInterface $fileReader, UserRepositoryInterface $userRepository, NotificationRepositoryInterface $notificationRepository, NotificationUserRepositoryInterface $notificationUserRepository, SendNotificationControllerInterface $sendNotificationController, SendNotificationServiceInterface $sendNotificationService)
     {
         $this->fileReader = $fileReader;
         $this->userRepository = $userRepository;
         $this->notificationRepository = $notificationRepository;
         $this->notificationUserRepository = $notificationUserRepository;
         $this->sendNotificationController = $sendNotificationController;
+        $this->sendNotificationService = $sendNotificationService;
     }
 
     public function manageUserNotificationWorkflow(FormValidationRequest $request)
@@ -78,5 +82,9 @@ class MainController extends Controller implements MainControllerInterface
         } else {
             $this->sendNotificationController->processingTemplateData($templateName, $message);
         }
+
+        $resultProcessing = $this->sendNotificationController->getProcessingSuccessfulFailedSend();
+
+        return view('dashboard')->with('resultProcessing', $resultProcessing);
     }
 }

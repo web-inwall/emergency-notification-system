@@ -18,13 +18,6 @@
 
         {{ $slot }}
 
-        <script>
-            const deleteRoute = '{{ route('home.delete') }}';
-        </script>
-        <script src="{{ asset('js/main.js') }}"></script>
-
-        @livewireScripts
-
 </body>
 
 </html>

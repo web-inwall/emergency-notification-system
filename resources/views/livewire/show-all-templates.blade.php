@@ -47,6 +47,14 @@
             <table id="userTable">
                 
                 <thead>
+                    <tr>
+                        <th>ФИО</th>
+                        <th>Способ отправки</th>
+                        <th>Получатель</th>
+                    </tr>
+                </thead>
+
+                <tbody>
                     @foreach($users as $index => $user)
                     @if($index < 15)
                         <tr>
@@ -63,9 +71,9 @@
                     @endif
                 @endforeach
                     
-                </thead>
+
                     
-                <tbody></tbody>
+                </tbody>
             </table>
         </div>
     @endif

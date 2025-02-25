@@ -7,14 +7,19 @@
         <table id="userTable">
                 <thead>
                     <tr>
-                        <th>bio</th>
-                        <th>link</th>
-                        <th>address</th>
+                        <th>ФИО</th>
+                        <th>Способ отправки</th>
+                        <th>Получатель</th>
                     </tr>
                 </thead>
             <tbody></tbody>
         </table>
     </div>
 
+    <script>
+        const deleteRoute = '{{ route('home.delete') }}';
+    </script>
+    <script src="{{ asset('js/main.js') }}"></script>
 
+    @livewireScripts
 </x-main-layout>

@@ -33,6 +33,7 @@ body {
     border-radius: 10px;
     background-color: rgb(255 255 255);
     margin: 0 auto;
+    margin-bottom: 40px;
 }
 
 #uploadForm input[type="file"],
@@ -73,8 +74,10 @@ button  {
     cursor: pointer;
 }
 
-button:hover {
-    background-color:#5257bd;
+button:hover,
+button:active,
+button:focus {
+    background-color: rgb(17 24 39);
 }
 
 #userTable {
@@ -92,3 +95,12 @@ button:hover {
 #allTemplates {
     margin-bottom: 20px;
 }
+
+.td-green {
+    color: green;
+}
+
+.td-red {
+    color: red;
+}
+

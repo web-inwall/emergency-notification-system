@@ -30,4 +30,9 @@ class SendNotificationController extends Controller implements SendNotificationC
 
         $this->sendNotificationService->checkingSendingMethodProcessing();
     }
+
+    public function getProcessingSuccessfulFailedSend()
+    {
+        return $this->sendNotificationService->processingSuccessfulFailedSend();
+    }
 }

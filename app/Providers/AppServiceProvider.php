@@ -51,7 +51,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(GmailRepositoryInterface::class, GmailRepository::class);
         $this->app->bind(TwilioRepositoryInterface::class, TwilioRepository::class);
         $this->app->bind(TelegramRepositoryInterface::class, TelegramRepository::class);
-
     }
 
     /**

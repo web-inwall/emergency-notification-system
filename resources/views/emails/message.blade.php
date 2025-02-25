@@ -6,7 +6,7 @@
     </head>
 
     <body>
-        <h1>Привет, {{ $userName }}</h1>
+        <h3>Привет, {{ $userName }}</h3>
         <p>{{ $userMessage }}</p>
     </body>
 </html>
