@@ -10,13 +10,13 @@ class FileReaderService implements FileReaderInterface
     public function readData(string $filePath): array
     {
         $handle = fopen($filePath, 'r'); // Получаем дескриптор файла
-        $data = [];
+        $csvData = [];
         $batchId = uniqid(); // Генерация уникального идентификатора
 
         if ($handle !== false) {
             while (($row = fgetcsv($handle)) !== false) {
                 if (count($row) == 3 && ! empty(trim($row[0])) && ! empty(trim($row[1])) && ! empty(trim($row[2]))) {
-                    $data[] = [
+                    $csvData[] = [
                         'bio' => trim($row[0]),
                         'link' => trim($row[1]),
                         'address' => trim($row[2]),
@@ -27,13 +27,13 @@ class FileReaderService implements FileReaderInterface
 
             fclose($handle);
 
-            if (count($data) > 0) {
-                return ['batchId' => $batchId, 'data' => $data];
+            if (count($csvData) > 0) {
+                return ['batchId' => $batchId, 'data' => $csvData];
             } else {
-                throw new Exception('Файл не соответствует формату CSV. Не удалось найти данные в правильном формате.');
+                throw new Exception('The file does not match the CSV format. The data could not be found in the correct format.');
             }
         } else {
-            throw new Exception('Не удалось открыть файл для чтения.');
+            throw new Exception('The file could not be opened for reading.');
         }
     }
 }

@@ -8,14 +8,14 @@ class FormValidationRequest extends FormRequest
 {
     public function authorize()
     {
-        return true; // Разрешить доступ к запросу
+        return true;
     }
 
     public function rules()
     {
         return [
             'template_name' => 'required|string|max:255',
-            'message' => 'required|string|max:100000',
+            'message' => 'required|string|max:10000',
         ];
     }
 }

@@ -7,26 +7,26 @@ body {
     text-align:center;  
 }
 
-#userTable {
+#user-table {
     width: 900px;
     table-layout: fixed;
     border-collapse: collapse;
 }
 
-#userTable th,
-#userTable td {
+#user-table th,
+#user-table td {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-#userTable th,
-#userTable td {
+#user-table th,
+#user-table td {
     border: 1px solid black;
     padding: 8px;
 }
 
-#uploadForm {
+#upload-form {
     max-width: 400px;
     padding: 15px 25px;
     border: 1px solid #ccc;
@@ -36,9 +36,9 @@ body {
     margin-bottom: 40px;
 }
 
-#uploadForm input[type="file"],
-#uploadForm input[type="text"],
-#uploadForm textarea {
+#upload-form input[type="file"],
+#upload-form input[type="text"],
+#upload-form textarea {
     width: 96%;
     margin-bottom: 15px;
     padding: 8px;
@@ -46,11 +46,11 @@ body {
     border-radius: 6px;
 }
 
-#uploadForm textarea {
+#upload-form textarea {
     height: 100px;
 }
 
-#uploadForm button {
+#upload-form button {
     background-color: #4caf50;
     color: white;
     padding: 10px 20px;
@@ -59,7 +59,7 @@ body {
     cursor: pointer;
 }
 
-#uploadForm button:hover {
+#upload-form button:hover {
     background-color: #45a049;
 }
 
@@ -80,7 +80,7 @@ button:focus {
     background-color: rgb(17 24 39);
 }
 
-#userTable {
+#user-table {
     margin: 0 auto;
 }
 
@@ -88,11 +88,11 @@ button:focus {
     margin-bottom: 18px;
 }
 
-.h3_all {
+.h3-all {
     margin-bottom: 11px;
 }
 
-#allTemplates {
+#all-templates {
     margin-bottom: 20px;
 }
 

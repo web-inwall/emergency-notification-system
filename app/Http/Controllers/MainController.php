@@ -9,7 +9,6 @@ use App\Interfaces\MainControllerInterface;
 use App\Interfaces\NotificationRepositoryInterface;
 use App\Interfaces\NotificationUserRepositoryInterface;
 use App\Interfaces\SendNotificationControllerInterface;
-use App\Interfaces\SendNotificationServiceInterface;
 use App\Interfaces\UserRepositoryInterface;
 use Exception;
 use Illuminate\Support\Facades\Validator;
@@ -27,64 +26,64 @@ class MainController extends Controller implements MainControllerInterface
 
     private $sendNotificationController;
 
-    private $sendNotificationService;
-
-    public function __construct(FileReaderInterface $fileReader, UserRepositoryInterface $userRepository, NotificationRepositoryInterface $notificationRepository, NotificationUserRepositoryInterface $notificationUserRepository, SendNotificationControllerInterface $sendNotificationController, SendNotificationServiceInterface $sendNotificationService)
-    {
+    public function __construct(
+        FileReaderInterface $fileReader,
+        UserRepositoryInterface $userRepository,
+        NotificationRepositoryInterface $notificationRepository,
+        NotificationUserRepositoryInterface $notificationUserRepository,
+        SendNotificationControllerInterface $sendNotificationController
+    ) {
         $this->fileReader = $fileReader;
         $this->userRepository = $userRepository;
         $this->notificationRepository = $notificationRepository;
         $this->notificationUserRepository = $notificationUserRepository;
         $this->sendNotificationController = $sendNotificationController;
-        $this->sendNotificationService = $sendNotificationService;
     }
 
     public function manageUserNotificationWorkflow(FormValidationRequest $request)
     {
         $templateName = $request->input('template_name');
-
-        // $message = $request->has('userMessage') && $request->input('userMessage') !== null ? $request->input('userMessage') : $request->input('message');
-
         $message = $request->input('message');
 
-        $requestAllDataForm = new FullFormValidationRequest;
-
-        $validator = Validator::make($request->all(), $requestAllDataForm->rules());
-
         if ($request->hasFile('file')) {
-            if ($validator->passes()) {
-
-                $file = $request->file('file'); // получаем информацию о файле
-                $filePath = $file->getPathname();
-
-                try {
-                    // Чтение данных из файла
-                    $data = $this->fileReader->readData($filePath); // в $data будет массив массивов с ключами и их значениями
-
-                    // Вставка пользователей в БД
-                    $this->userRepository->insertUsers($data['data']);
-
-                    // Вставка уведомления в БД
-                    $groupNotification = $this->notificationRepository->createNotification($templateName, $message);
-
-                    // Вставка данных в таблицу связи
-                    $this->notificationUserRepository->createNotificationUsers($data, $groupNotification);
-
-                    // Отправка уведомлений пользователям
-                    $this->sendNotificationController->processingFormData($data, $message);
-
-                } catch (Exception $e) {
-                    return response()->json(['error' => $e->getMessage()], 500);
-                }
-            } else {
-                throw ValidationException::withMessages($validator->errors()->messages());
-            }
+            $this->validateFileRequest($request);
+            $this->processFileData($request, $templateName, $message);
         } else {
             $this->sendNotificationController->processingTemplateData($templateName, $message);
         }
 
         $resultProcessing = $this->sendNotificationController->getProcessingSuccessfulFailedSend();
 
-        return view('dashboard')->with('resultProcessing', $resultProcessing);
+        return View('dashboard')->with('resultProcessing', $resultProcessing);
+    }
+
+    private function validateFileRequest(FormValidationRequest $request)
+    {
+        $fullFormValidationRequest = new FullFormValidationRequest;
+        $validator = Validator::make($request->all(), $fullFormValidationRequest->rules());
+
+        if (! $validator->passes()) {
+            throw ValidationException::withMessages($validator->errors()->messages());
+        }
+    }
+
+    private function processFileData(FormValidationRequest $request, string $templateName, string $message)
+    {
+        try {
+            $filePath = $request->file('file')->getPathname();
+            $csvData = $this->fileReader->readData($filePath);
+
+            $this->userRepository->insertUsers($csvData['data']);
+
+            $notificationObject = $this->notificationRepository->createNotification($templateName, $message);
+
+            $this->notificationUserRepository->createNotificationUsers($csvData, $notificationObject);
+
+            $this->sendNotificationController->processingFormData($csvData, $message);
+        } catch (Exception $e) {
+            // Логирование исключения
+            // Возвращение более информативного сообщения об ошибке
+            return response()->json(['error' => 'Произошла ошибка при обработке файла'], 500);
+        }
     }
 }

@@ -32,7 +32,7 @@ class SendNotificationService implements SendNotificationServiceInterface
 
     protected $recipient;
 
-    protected $data = [];
+    protected $csvData = [];
 
     protected $message;
 
@@ -68,15 +68,15 @@ class SendNotificationService implements SendNotificationServiceInterface
         $this->twilioSmsService = $twilioSmsService;
     }
 
-    public function setData($data, $message)
+    public function setData($csvData, $message)
     {
 
         $this->message = $message;
 
-        if (! empty($data) && is_array($data) && array_key_exists('data', $data)) {
-            $this->users = $data['data'];
+        if (! empty($csvData) && is_array($csvData) && array_key_exists('data', $csvData)) {
+            $this->users = $csvData['data'];
         } else {
-            $this->templateName = $data;
+            $this->templateName = $csvData;
 
             if (! empty($this->templateName)) {
                 $this->getUsersForProcessingTemplateData();

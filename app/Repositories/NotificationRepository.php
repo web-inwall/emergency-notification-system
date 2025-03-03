@@ -4,18 +4,21 @@ namespace App\Repositories;
 
 use App\Interfaces\NotificationRepositoryInterface;
 use App\Models\Notification;
+use Illuminate\Support\Facades\DB;
 
 class NotificationRepository implements NotificationRepositoryInterface
 {
-    private $groupNotification;
+    private $notificationObject;
 
     public function createNotification($templateName, $message)
     {
-        $this->groupNotification = Notification::create([
+        $notificationId = DB::table('notifications')->insertGetId([
             'template_name' => $templateName,
             'message' => $message,
         ]);
 
-        return $this->groupNotification;
+        $this->notificationObject = Notification::find($notificationId);
+
+        return $this->notificationObject;
     }
 }

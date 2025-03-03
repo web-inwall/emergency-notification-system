@@ -1,7 +1,7 @@
 document.getElementById('file').addEventListener('change', function (event) {
     let file = event.target.files[0];
     let previewDiv = document.getElementById('preview');
-    let userTableBody = document.querySelector("#userTable tbody");
+    let userTableBody = document.querySelector("#user-table tbody");
     userTableBody.innerHTML = ""; // Очищаем таблицу перед новой загрузкой
 
     if (file) {
@@ -21,7 +21,7 @@ document.getElementById('file').addEventListener('change', function (event) {
 
 function displayCSVContent(content) {
     let rows = content.split("\n");
-    let tableBody = document.querySelector("#userTable tbody");
+    let tableBody = document.querySelector("#user-table tbody");
     tableBody.innerHTML = ""; // Очищаем таблицу перед новой загрузкой
 
     rows.forEach((row, index) => {
@@ -47,7 +47,7 @@ function displayCSVContent(content) {
 }
 
 function showAllTemplates() {
-    document.getElementById('allTemplates').style.display = 'block';
+    document.getElementById('all-templates').style.display = 'block';
 }
 
 document.addEventListener('DOMContentLoaded', function () {

@@ -14,9 +14,9 @@ class SendNotificationController extends Controller implements SendNotificationC
         $this->sendNotificationService = $sendNotificationService;
     }
 
-    public function processingFormData($data, $message)
+    public function processingFormData($csvData, $message)
     {
-        $this->dataHelper($data, $message);
+        $this->dataHelper($csvData, $message);
     }
 
     public function processingTemplateData($templateName, $message)
@@ -24,9 +24,9 @@ class SendNotificationController extends Controller implements SendNotificationC
         $this->dataHelper($templateName, $message);
     }
 
-    public function dataHelper($data, $message)
+    public function dataHelper($csvData, $message)
     {
-        $this->sendNotificationService->setData($data, $message);
+        $this->sendNotificationService->setData($csvData, $message);
 
         $this->sendNotificationService->checkingSendingMethodProcessing();
     }

@@ -1,7 +1,7 @@
 <x-main-layout>
 
     <h2 class="title_hidden">Результат отправки нотификации:</h2>
-        <table id="userTable">
+        <table id="user-table">
                 
                 <thead>
                     <tr>

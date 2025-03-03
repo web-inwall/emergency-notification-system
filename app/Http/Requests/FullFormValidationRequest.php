@@ -22,7 +22,7 @@ class FullFormValidationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'file' => 'required|file|max:2048',
+            'file' => 'required|file|mimes:csv|max:2048',
             'template_name' => 'unique:notifications',
         ];
     }

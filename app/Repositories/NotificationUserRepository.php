@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Interfaces\NotificationUserRepositoryInterface;
 use App\Interfaces\UserRepositoryInterface;
-use App\Models\Notification_Recipient;
+use Illuminate\Support\Facades\DB;
 
 class NotificationUserRepository implements NotificationUserRepositoryInterface
 {
@@ -15,16 +15,17 @@ class NotificationUserRepository implements NotificationUserRepositoryInterface
         $this->userRepository = $userRepository;
     }
 
-    public function createNotificationUsers($data, $groupNotification)
+    public function createNotificationUsers($csvData, $notificationObject)
     {
-        $userIds = $this->getUserIdsFromData($data);
+        $userIds = $this->getUserIdsFromData($csvData);
         $userIdsString = $this->implodeUserIds($userIds);
-        $this->saveNotificationRecipient($userIdsString, $groupNotification);
+
+        $this->saveNotificationRecipient($userIdsString, $notificationObject);
     }
 
-    private function getUserIdsFromData($data)
+    private function getUserIdsFromData($csvData)
     {
-        $batchId = $data['batchId'];
+        $batchId = $csvData['batchId'];
 
         return $this->userRepository->getUserIdsByBatchId($batchId);
     }
@@ -34,13 +35,13 @@ class NotificationUserRepository implements NotificationUserRepositoryInterface
         return implode(',', $userIds);
     }
 
-    private function saveNotificationRecipient($userIdsString, $groupNotification)
+    private function saveNotificationRecipient($userIdsString, $notificationObject)
     {
-        $notificationRecipient = new Notification_Recipient;
-        $notificationRecipient->recipient_id = $userIdsString;
-        $notificationRecipient->notification_id = $groupNotification->id;
-        $notificationRecipient->created_at = now();
-        $notificationRecipient->updated_at = now();
-        $notificationRecipient->save();
+        DB::table('notification__recipients')->insert([
+            'recipient_id' => $userIdsString,
+            'notification_id' => $notificationObject->id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 }

@@ -4,7 +4,7 @@
 
     <div id="preview" style="display: none">
         <h3>Получатели из шаблона:</h3>
-        <table id="userTable">
+        <table id="user-table">
                 <thead>
                     <tr>
                         <th>ФИО</th>

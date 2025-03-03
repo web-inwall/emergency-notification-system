@@ -1,7 +1,5 @@
 <?php
 
-// СТАРЫЙ КОД
-
 namespace App\Repositories;
 
 use App\Interfaces\UserRepositoryInterface;
@@ -10,27 +8,31 @@ use Illuminate\Support\Facades\DB;
 
 class UserRepository implements UserRepositoryInterface
 {
-    public function insertUsers(array $data): void
+    public function insertUsers(array $csvData): void
     {
-        DB::beginTransaction(); // Начало транзакции
-
         try {
-            DB::table('recipients')->insert($data);
+            DB::beginTransaction(); // Начало транзакции
+
+            if (! empty($csvData)) {
+                DB::table('recipients')->insert($csvData);
+            } else {
+                throw new Exception('There is no data to insert.');
+            }
 
             DB::commit(); // Фиксация транзакции при успешной вставке
         } catch (Exception $e) {
             DB::rollBack(); // Отмена транзакции при ошибке
-            throw new Exception('Данные не записались в БД: '.$e->getMessage());
+            throw new Exception('Error when inserting data into the database: '.$e->getMessage());
         }
     }
 
     public function getUserIdsByBatchId($batchId)
     {
-        return DB::table('recipients')
+        $userIds = DB::table('recipients')
             ->where('batch_id', $batchId)
             ->pluck('id')
             ->toArray();
+
+        return $userIds;
     }
 }
-
-// НОВЫЙ КОД
