@@ -4,5 +4,5 @@ namespace App\Interfaces;
 
 interface NotificationTemplateRepositoryInterface
 {
-    public function getDataTemplates();
+    public function getDataTemplates(): array;
 }

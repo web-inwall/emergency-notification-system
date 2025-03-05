@@ -10,15 +10,9 @@ use Twilio\Security\RequestValidator;
 
 class TwilioRequestIsValid
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @return mixed
-     */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): mixed
     {
         try {
-
             $twilioToken = config('app.twilio.auth_token');
 
             if (empty($twilioToken)) {
@@ -29,7 +23,6 @@ class TwilioRequestIsValid
 
             $requestData = $request->toArray();
 
-            // Switch to the body content if this is a JSON request.
             if (array_key_exists('bodySHA256', $requestData)) {
                 $requestData = $request->getContent();
             }
@@ -41,7 +34,7 @@ class TwilioRequestIsValid
             );
 
             if (! $isValid) {
-                throw new Exception;
+                throw new Exception('Invalid Twilio request');
             }
         } catch (\Throwable $ex) {
             return new Response(['success' => false, 'message' => 'Failed Authentication'], 403);

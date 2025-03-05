@@ -4,13 +4,13 @@ namespace App\Interfaces;
 
 interface SendNotificationServiceInterface
 {
-    public function checkingUsersFields($users);
+    public function checkingUsersFields(array $users): array;
 
-    public function checkingSendingMethodProcessing();
+    public function checkingSendingMethodProcessing(): void;
 
-    public function getUsersForProcessingTemplateData();
+    public function getUsersForProcessingTemplateData(): void;
 
-    public function setData($csvData, $message);
+    public function setData(array $csvData, string $message): void;
 
-    public function processingSuccessfulFailedSend();
+    public function processingSuccessfulFailedSend(): array;
 }

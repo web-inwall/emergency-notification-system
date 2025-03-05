@@ -47,10 +47,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(SendNotificationControllerInterface::class, SendNotificationController::class);
         $this->app->bind(SendNotificationServiceInterface::class, SendNotificationService::class);
         $this->app->bind(DeleteDataRepositoryInterface::class, DeleteDataRepository::class);
-        $this->app->bind(TwilioSmsControllerInterface::class, TwilioSmsController::class);
         $this->app->bind(GmailRepositoryInterface::class, GmailRepository::class);
         $this->app->bind(TwilioRepositoryInterface::class, TwilioRepository::class);
         $this->app->bind(TelegramRepositoryInterface::class, TelegramRepository::class);
+        $this->app->bind(TwilioSmsControllerInterface::class, TwilioSmsController::class);
     }
 
     /**

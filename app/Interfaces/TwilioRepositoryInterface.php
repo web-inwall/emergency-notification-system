@@ -4,7 +4,7 @@ namespace App\Interfaces;
 
 interface TwilioRepositoryInterface
 {
-    public function createSms($result);
+    public function createSms(array $result): void;
 
-    public function createLogData($logData);
+    public function createLogData(array $logData): void;
 }

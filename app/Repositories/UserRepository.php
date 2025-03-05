@@ -11,7 +11,7 @@ class UserRepository implements UserRepositoryInterface
     public function insertUsers(array $csvData): void
     {
         try {
-            DB::beginTransaction(); // Начало транзакции
+            DB::beginTransaction();
 
             if (! empty($csvData)) {
                 DB::table('recipients')->insert($csvData);
@@ -19,14 +19,14 @@ class UserRepository implements UserRepositoryInterface
                 throw new Exception('There is no data to insert.');
             }
 
-            DB::commit(); // Фиксация транзакции при успешной вставке
+            DB::commit();
         } catch (Exception $e) {
-            DB::rollBack(); // Отмена транзакции при ошибке
+            DB::rollBack();
             throw new Exception('Error when inserting data into the database: '.$e->getMessage());
         }
     }
 
-    public function getUserIdsByBatchId($batchId)
+    public function getUserIdsByBatchId(string $batchId): array
     {
         $userIds = DB::table('recipients')
             ->where('batch_id', $batchId)

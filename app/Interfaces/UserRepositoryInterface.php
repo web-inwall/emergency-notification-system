@@ -6,5 +6,5 @@ interface UserRepositoryInterface
 {
     public function insertUsers(array $userData): void;
 
-    public function getUserIdsByBatchId($batchId);
+    public function getUserIdsByBatchId(string $batchId): array;
 }

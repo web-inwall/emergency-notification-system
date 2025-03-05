@@ -11,20 +11,22 @@ use App\Interfaces\NotificationUserRepositoryInterface;
 use App\Interfaces\SendNotificationControllerInterface;
 use App\Interfaces\UserRepositoryInterface;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 class MainController extends Controller implements MainControllerInterface
 {
-    private $fileReader;
+    private FileReaderInterface $fileReader;
 
-    private $userRepository;
+    private UserRepositoryInterface $userRepository;
 
-    private $notificationRepository;
+    private NotificationRepositoryInterface $notificationRepository;
 
-    private $notificationUserRepository;
+    private NotificationUserRepositoryInterface $notificationUserRepository;
 
-    private $sendNotificationController;
+    private SendNotificationControllerInterface $sendNotificationController;
 
     public function __construct(
         FileReaderInterface $fileReader,
@@ -40,24 +42,28 @@ class MainController extends Controller implements MainControllerInterface
         $this->sendNotificationController = $sendNotificationController;
     }
 
-    public function manageUserNotificationWorkflow(FormValidationRequest $request)
+    public function manageUserNotificationWorkflow(FormValidationRequest $request): View|JsonResponse
     {
-        $templateName = $request->input('template_name');
-        $message = $request->input('message');
+        try {
+            $templateName = $request->input('template_name');
+            $message = $request->input('message');
 
-        if ($request->hasFile('file')) {
-            $this->validateFileRequest($request);
-            $this->processFileData($request, $templateName, $message);
-        } else {
-            $this->sendNotificationController->processingTemplateData($templateName, $message);
+            if ($request->hasFile('file')) {
+                $this->validateFileRequest($request);
+                $this->processFileData($request, $templateName, $message);
+            } else {
+                $this->sendNotificationController->processingTemplateData($templateName, $message);
+            }
+
+            $resultProcessing = $this->sendNotificationController->getProcessingSuccessfulFailedSend();
+
+            return view('dashboard')->with('resultProcessing', $resultProcessing);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
         }
-
-        $resultProcessing = $this->sendNotificationController->getProcessingSuccessfulFailedSend();
-
-        return View('dashboard')->with('resultProcessing', $resultProcessing);
     }
 
-    private function validateFileRequest(FormValidationRequest $request)
+    private function validateFileRequest(FormValidationRequest $request): void
     {
         $fullFormValidationRequest = new FullFormValidationRequest;
         $validator = Validator::make($request->all(), $fullFormValidationRequest->rules());
@@ -67,7 +73,7 @@ class MainController extends Controller implements MainControllerInterface
         }
     }
 
-    private function processFileData(FormValidationRequest $request, string $templateName, string $message)
+    private function processFileData(FormValidationRequest $request, string $templateName, string $message): void
     {
         try {
             $filePath = $request->file('file')->getPathname();
@@ -81,9 +87,7 @@ class MainController extends Controller implements MainControllerInterface
 
             $this->sendNotificationController->processingFormData($csvData, $message);
         } catch (Exception $e) {
-            // Логирование исключения
-            // Возвращение более информативного сообщения об ошибке
-            return response()->json(['error' => 'Произошла ошибка при обработке файла'], 500);
+            throw new \Exception('Произошла ошибка при обработке файла', 0, $e);
         }
     }
 }

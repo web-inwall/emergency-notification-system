@@ -4,5 +4,5 @@ namespace App\Interfaces;
 
 interface TwilioSmsServiceInterface
 {
-    public function sendMessage($to, $body): array;
+    public function sendMessage(string $to, string $body): array;
 }

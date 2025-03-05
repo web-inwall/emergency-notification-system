@@ -8,7 +8,7 @@ use App\Models\Communications\TwilioSmsLog;
 
 class TwilioRepository implements TwilioRepositoryInterface
 {
-    public function createSms($result)
+    public function createSms(array $result): void
     {
         TwilioSms::create([
             'sid' => $result['data']['sid'],
@@ -20,7 +20,7 @@ class TwilioRepository implements TwilioRepositoryInterface
         ]);
     }
 
-    public function createLogData($logData)
+    public function createLogData(array $logData): void
     {
         TwilioSmsLog::create($logData);
     }

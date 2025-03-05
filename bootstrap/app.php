@@ -16,7 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->web(append: [
-            StartSession::class, // Добавляем промежуточное программное обеспечение StartSession к веб-промежуточному программному обеспечению
+            StartSession::class,
         ])
             ->validateCsrfTokens(except: [
                 'livewire/*',

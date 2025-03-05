@@ -7,7 +7,7 @@ use App\Models\Communications\GmailLog;
 
 class GmailRepository implements GmailRepositoryInterface
 {
-    public function createLogData($recipient, $status)
+    public function createLogData(string $recipient, string $status): void
     {
         GmailLog::create([
             'email' => $recipient,

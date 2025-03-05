@@ -4,5 +4,5 @@ namespace App\Interfaces;
 
 interface TelegramRepositoryInterface
 {
-    public function createLogData($chatId, $status);
+    public function createLogData(string $chatId, string $status): void;
 }

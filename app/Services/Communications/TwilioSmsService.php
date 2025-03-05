@@ -10,30 +10,18 @@ use Twilio\Rest\Client;
 
 class TwilioSmsService implements TwilioSmsServiceInterface
 {
-    protected $twilioRepositoryInterface;
+    protected TwilioRepositoryInterface $twilioRepositoryInterface;
 
-    /**
-     * Twilio Client
-     */
-    protected $client;
+    protected Client $client;
 
-    /**
-     * Twilio instance parameters
-     */
-    protected $sid;
+    protected string $sid;
 
-    protected $token;
+    protected string $token;
 
-    protected $from_number;
+    protected string $from_number;
 
-    /**
-     * Status Callback Url
-     */
-    protected $status_callback_url;
+    protected string $status_callback_url;
 
-    /**
-     * @throws \Twilio\Exceptions\ConfigurationException
-     */
     public function __construct(TwilioRepositoryInterface $twilioRepositoryInterface)
     {
         $this->twilioRepositoryInterface = $twilioRepositoryInterface;
@@ -46,16 +34,21 @@ class TwilioSmsService implements TwilioSmsServiceInterface
         $this->client = new Client($this->sid, $this->token);
     }
 
-    public function sendMessage($to, $body): array
+    public function sendMessage(string $to, string $body): array
     {
-        $result = ['success' => false, 'data' => [], 'message' => '', 'twilio_sms_id' => null];
+        $result = [
+            'success' => false,
+            'data' => [],
+            'message' => '',
+            'twilio_sms_id' => null,
+        ];
 
         try {
-
-            $options = [];
-            $options['body'] = $body;
-            $options['from'] = $this->from_number;
-            $options['statusCallback'] = $this->status_callback_url;
+            $options = [
+                'body' => $body,
+                'from' => $this->from_number,
+                'statusCallback' => $this->status_callback_url,
+            ];
 
             $apiResponse = $this->client->messages->create($to, $options);
 
@@ -64,6 +57,7 @@ class TwilioSmsService implements TwilioSmsServiceInterface
             if (! empty($result['data']['errorCode'])) {
                 throw new Exception('Send sms request failed');
             }
+
             $result['success'] = true;
 
             $createdSms = $this->twilioRepositoryInterface->createSms($result);
@@ -77,11 +71,11 @@ class TwilioSmsService implements TwilioSmsServiceInterface
                 'new_status' => $result['data']['status'] ?? null,
                 'details' => $result['data'],
             ]);
-
         } catch (Exception $e) {
             $result['success'] = false;
             $result['message'] = $e->getMessage();
             $result['data']['error_message'] = $result['message'];
+
             $this->log([
                 'twilio_sms_id' => null,
                 'sms_sid' => $result['data']['sid'] ?? null,
@@ -91,13 +85,12 @@ class TwilioSmsService implements TwilioSmsServiceInterface
             ]);
 
             Log::channel('single')->error($e->getFile().' :: '.$e->getLine().' :: '.$e->getMessage());
-
         }
 
         return $result;
     }
 
-    private function log($data)
+    private function log(array $data): void
     {
         try {
             if (empty($data)) {
@@ -114,20 +107,12 @@ class TwilioSmsService implements TwilioSmsServiceInterface
             ];
 
             $this->twilioRepositoryInterface->createLogData($logData);
-
         } catch (Exception $e) {
-            // NOTICE: Should probably create a log channel just for Twilio
             Log::channel('single')->error($e->getFile().' :: '.$e->getLine().' :: '.$e->getMessage());
         }
-
     }
 
-    /**
-     * Get Twilio Client
-     *
-     * @return Client
-     */
-    public function getClient()
+    public function getClient(): Client
     {
         return $this->client;
     }

@@ -29,7 +29,7 @@ class NotificationTemplateRepository implements NotificationTemplateRepositoryIn
         $formattedTemplates = [];
 
         foreach ($templates as $template) {
-            $userIds = explode(',', $template->recipient_id);
+            $userIds = array_map('intval', explode(',', $template->recipient_id));
 
             $users = $this->getUsersByIds($userIds);
 

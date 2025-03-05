@@ -10,7 +10,7 @@ class ClearCommand extends Command
 
     protected $description = 'Clear routes, cache, and config';
 
-    public function handle()
+    public function handle(): void
     {
         $this->call('route:clear');
         $this->call('cache:clear');

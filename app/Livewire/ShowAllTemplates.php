@@ -21,16 +21,16 @@ class ShowAllTemplates extends Component
 
     public $users;
 
-    public function mount(NotificationTemplateRepositoryInterface $notificationTemplateRepository)
+    public function mount(NotificationTemplateRepositoryInterface $notificationTemplateRepository): void
     {
         $response = $notificationTemplateRepository->getDataTemplates();
 
         $this->templates = $response['templates'];
 
-        $this->loadUserData(); // Вызов метода для загрузки данных о пользователях
+        $this->loadUserData();
     }
 
-    public function selectTemplate($templateName)
+    public function selectTemplate(string $templateName): void
     {
         if ($templateName) {
 
@@ -39,14 +39,13 @@ class ShowAllTemplates extends Component
             $this->selectedTemplateName = $selectedTemplate['template_name'];
             $this->selectedTemplateMessage = $selectedTemplate['message'];
 
-            $this->loadUserData($selectedTemplate['users']); // Передача данных о пользователях для загрузки
-
+            $this->loadUserData($selectedTemplate['users']);
         } else {
             $this->resetFields();
         }
     }
 
-    private function loadUserData($users = [])
+    private function loadUserData(array $users = []): void
     {
         $userBios = [];
         $userLinks = [];
@@ -62,15 +61,14 @@ class ShowAllTemplates extends Component
             ];
         }
 
-        $this->users = $userArray; // Сохраняем массив пользователей в переменной $users
+        $this->users = $userArray;
 
-        // Оптимизация: Объединение данных о пользователях только при необходимости
-        $this->selectedUserBio = implode(', ', $userBios); // Объединить биографии пользователей в строку
-        $this->selectedUserLink = implode(', ', $userLinks); // Объединить ссылки пользователей в строку
-        $this->selectedUserAddress = implode(', ', $userAddresses); // Объединить адреса пользователей в строку
+        $this->selectedUserBio = implode(', ', $userBios);
+        $this->selectedUserLink = implode(', ', $userLinks);
+        $this->selectedUserAddress = implode(', ', $userAddresses);
     }
 
-    private function resetFields()
+    private function resetFields(): void
     {
         $this->selectedTemplateName = null;
         $this->selectedTemplateMessage = null;

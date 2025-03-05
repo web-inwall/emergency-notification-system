@@ -4,9 +4,9 @@ namespace App\Interfaces;
 
 interface SendNotificationControllerInterface
 {
-    public function processingFormData($csvData, $message);
+    public function processingFormData(array $csvData, string $message): void;
 
-    public function processingTemplateData($templateName, $message);
+    public function processingTemplateData(string $templateName, string $message): void;
 
-    public function getProcessingSuccessfulFailedSend();
+    public function getProcessingSuccessfulFailedSend(): array;
 }

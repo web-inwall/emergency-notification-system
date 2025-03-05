@@ -4,5 +4,5 @@ namespace App\Interfaces;
 
 interface GmailRepositoryInterface
 {
-    public function createLogData($recipient, $status);
+    public function createLogData(string $recipient, string $status): void;
 }

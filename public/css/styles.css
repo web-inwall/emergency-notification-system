@@ -104,3 +104,6 @@ button:focus {
     color: red;
 }
 
+.td-text-center td {
+    text-align:center;
+}

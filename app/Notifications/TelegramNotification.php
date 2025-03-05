@@ -14,11 +14,11 @@ class TelegramNotification extends Notification
 {
     use Queueable;
 
-    private $message;
+    private string $message;
 
-    private $telegramRepository;
+    private TelegramRepositoryInterface $telegramRepository;
 
-    public function __construct($message, TelegramRepositoryInterface $telegramRepository)
+    public function __construct(string $message, TelegramRepositoryInterface $telegramRepository)
     {
         $this->message = $message;
         $this->telegramRepository = $telegramRepository;
@@ -29,13 +29,11 @@ class TelegramNotification extends Notification
         return [TelegramChannel::class];
     }
 
-    public function toTelegram($notifiable)
+    public function toTelegram(mixed $notifiable): ?TelegramMessage
     {
-
         $chatId = env('TELEGRAM_CHAT_ID');
 
         try {
-
             $message = TelegramMessage::create()
                 ->to($chatId)
                 ->content($this->message);
@@ -47,6 +45,5 @@ class TelegramNotification extends Notification
         } catch (Exception $e) {
             Log::error('Error in sending Telegram notification: '.$e->getMessage());
         }
-
     }
 }

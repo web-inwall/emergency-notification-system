@@ -10,42 +10,42 @@ class User extends Model implements Authenticatable
 {
     use HasFactory;
 
-    protected $table = 'users'; // Указываем таблицу 'users' для модели Users
+    protected $table = 'users';
 
-    protected $fillable = ['email', 'password']; // Указываем, какие поля можно заполнять
+    protected $fillable = ['email', 'password'];
 
-    public function getAuthIdentifierName()
+    public function getAuthIdentifierName(): string
     {
-        return 'id'; // Имя столбца, используемого для идентификации пользователя
+        return 'id';
     }
 
-    public function getAuthIdentifier()
+    public function getAuthIdentifier(): mixed
     {
-        return $this->getKey(); // Возвращает идентификатор пользователя
+        return $this->getKey();
     }
 
-    public function getAuthPassword()
+    public function getAuthPassword(): string
     {
-        return $this->password; // Возвращает пароль пользователя
+        return $this->password;
     }
 
-    public function getAuthPasswordName()
+    public function getAuthPasswordName(): string
     {
-        return 'password'; // Имя столбца, используемого для хранения пароля пользователя
+        return 'password';
     }
 
-    public function getRememberToken()
+    public function getRememberToken(): string
     {
-        return $this->remember_token; // Возвращает токен "remember" пользователя
+        return $this->remember_token;
     }
 
-    public function setRememberToken($value)
+    public function setRememberToken(mixed $value): void
     {
-        $this->remember_token = $value; // Устанавливает токен "remember" пользователя
+        $this->remember_token = $value;
     }
 
-    public function getRememberTokenName()
+    public function getRememberTokenName(): string
     {
-        return 'remember_token'; // Имя столбца, используемого для токена "remember"
+        return 'remember_token';
     }
 }

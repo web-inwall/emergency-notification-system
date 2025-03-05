@@ -12,7 +12,7 @@
                     </tr>
                 </thead>
 
-                <tbody>
+                <tbody class="td-text-center">
 
                     @if (!empty($resultProcessing['success']))
                         

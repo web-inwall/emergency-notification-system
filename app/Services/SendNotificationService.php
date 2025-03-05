@@ -5,70 +5,68 @@ namespace App\Services;
 use App\Interfaces\GmailRepositoryInterface;
 use App\Interfaces\NotificationTemplateRepositoryInterface;
 use App\Interfaces\SendNotificationServiceInterface;
-use App\Interfaces\TwilioSmsControllerInterface;
+use App\Interfaces\TelegramRepositoryInterface;
 use App\Mail\Email;
-use App\Notifications\TelegramNotification;
 use App\Services\Communications\TwilioSmsService;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Notification;
 
 class SendNotificationService implements SendNotificationServiceInterface
 {
-    protected $notificationTemplateRepository;
+    protected NotificationTemplateRepositoryInterface $notificationTemplateRepository;
 
-    protected $gmailRepository;
+    protected GmailRepositoryInterface $gmailRepository;
 
-    protected $arrayAllSendingMethod;
+    protected TwilioSmsService $twilioSmsService;
 
-    protected $name;
+    protected TelegramRepositoryInterface $telegramRepository;
 
-    protected $userName;
+    protected array $arrayAllSendingMethod;
 
-    protected $getAllDataUsers;
+    protected array $name = [];
 
-    protected $users;
+    protected string $userName;
 
-    protected $recipient;
+    protected array $getAllDataUsers;
 
-    protected $csvData = [];
+    protected array $users;
 
-    protected $message;
+    protected array $recipient;
 
-    protected $templates;
+    protected array $csvData;
 
-    protected $templateName;
+    protected string $message;
 
-    protected $successRecipientsSms = [];
+    protected array $templates;
 
-    protected $successRecipientsGmail = [];
+    protected string $templateName;
 
-    protected $successRecipientsTelegram = [];
+    protected array $successRecipientsSms = [];
 
-    protected $twilioSmsController;
+    protected array $successRecipientsGmail = [];
 
-    protected $twilioSmsService;
+    protected array $successRecipientsTelegram = [];
 
-    protected $arrayUsersSms = [];
+    protected array $arrayUsersSms;
 
-    protected $arrayUsersTelegram = [];
+    protected array $arrayUsersTelegram;
 
-    protected $arrayUsersGmail = [];
+    protected array $arrayUsersGmail;
 
     public function __construct(
         NotificationTemplateRepositoryInterface $notificationTemplateRepository,
-        TwilioSmsControllerInterface $twilioSmsController,
         GmailRepositoryInterface $gmailRepository,
         TwilioSmsService $twilioSmsService,
+        TelegramRepositoryInterface $telegramRepository,
     ) {
         $this->notificationTemplateRepository = $notificationTemplateRepository;
-        $this->twilioSmsController = $twilioSmsController;
         $this->gmailRepository = $gmailRepository;
         $this->twilioSmsService = $twilioSmsService;
+        $this->telegramRepository = $telegramRepository;
     }
 
-    public function setData($csvData, $message)
+    public function setData(mixed $csvData, string $message): void
     {
 
         $this->message = $message;
@@ -84,9 +82,8 @@ class SendNotificationService implements SendNotificationServiceInterface
         }
     }
 
-    public function getUsersForProcessingTemplateData()
+    public function getUsersForProcessingTemplateData(): void
     {
-
         $response = $this->notificationTemplateRepository->getDataTemplates();
         $this->templates = $response['templates'];
         $selectedTemplate = collect($this->templates)->firstWhere('template_name', $this->templateName);
@@ -94,13 +91,11 @@ class SendNotificationService implements SendNotificationServiceInterface
         $this->users = $selectedTemplate['users'];
     }
 
-    public function checkingSendingMethodProcessing()
+    public function checkingSendingMethodProcessing(): void
     {
-
         $this->checkingUsersFields($this->users);
 
         if (! empty($this->arrayAllSendingMethod)) {
-
             if (! empty($this->arrayUsersGmail)) {
                 $this->sendGmail($this->arrayUsersGmail);
             }
@@ -115,10 +110,9 @@ class SendNotificationService implements SendNotificationServiceInterface
         }
     }
 
-    public function checkingUsersFields($users)
+    public function checkingUsersFields(array $users): array
     {
-
-        foreach ($this->users as $user) {
+        foreach ($users as $user) {
             if (strtolower($user['link']) == 'gmail') {
                 $this->arrayUsersGmail[] = $user;
             } elseif (strtolower($user['link']) == 'sms') {
@@ -128,17 +122,13 @@ class SendNotificationService implements SendNotificationServiceInterface
             }
         }
 
-        $this->arrayAllSendingMethod[] = $this->arrayUsersGmail;
-        $this->arrayAllSendingMethod[] = $this->arrayUsersSms;
-        $this->arrayAllSendingMethod[] = $this->arrayUsersTelegram;
+        $this->arrayAllSendingMethod = [$this->arrayUsersGmail, $this->arrayUsersSms, $this->arrayUsersTelegram];
 
         return $this->arrayAllSendingMethod;
-
     }
 
-    public function sendGmail($arrayUsersGmail)
+    public function sendGmail(array $arrayUsersGmail): void
     {
-
         $nameMethod = 'Gmail';
 
         foreach ($arrayUsersGmail as $user) {
@@ -147,8 +137,8 @@ class SendNotificationService implements SendNotificationServiceInterface
         }
 
         foreach ($this->recipient as $key => $recipient) {
-            $userName = $this->name[$key] ?? ''; // Получаем имя получателя из массива $this->name
-            $userMessage = $this->message; // Используем одно сообщение для всех получателей
+            $userName = $this->name[$key] ?? '';
+            $userMessage = $this->message;
 
             try {
                 Mail::to($recipient)
@@ -157,9 +147,7 @@ class SendNotificationService implements SendNotificationServiceInterface
                 $this->gmailRepository->createLogData($recipient, 'success');
 
                 $this->successRecipientsGmail[] = $recipient;
-
             } catch (Exception $e) {
-
                 Log::error("Ошибка при отправке письма на адрес: $recipient. Ошибка: ".$e->getMessage());
 
                 $this->errorMessage($e, $nameMethod);
@@ -167,75 +155,77 @@ class SendNotificationService implements SendNotificationServiceInterface
         }
     }
 
-    private function sendSms($arrayUsersSms)
+    private function sendSms(array $arrayUsersSms): array
     {
+        $nameMethod = 'Sms';
 
-        // $nameMethod = 'Sms';
+        $results = [];
 
-        // $results = []; // Массив для хранения результатов отправки сообщений
-
-        // foreach ($arrayUsersSms as $user) {
-        //     $recipient = $user['address'];
-        //     $userMessage = $user['bio'].': '.$this->message;
-
-        //     try {
-        //         $sendResult = $this->twilioSmsService->sendMessage($recipient, $userMessage);
-        //         if (! isset($sendResult['success']) || ! $sendResult['success']) {
-        //             throw new Exception(($sendResult['message'] ?? ''));
-        //         }
-        //         $results[] = $sendResult; // Сохраняем результат отправки сообщения
-
-        //         $this->successRecipientsSms [] = $recipient;
-
-        //     } catch (Exception $e) {
-        //         $results[] = 'Send SMS Failed - '.$e->getMessage();
-
-        //         $this->errorMessage($e, $nameMethod);
-
-        //     }
-        // }
-
-        // return $results; // Возвращаем результаты отправки сообщений для всех адресатов
-    }
-
-    public function sendTelegram($arrayUsersTelegram)
-    {
-
-        foreach ($arrayUsersTelegram as $user) {
-
-            $nameMethod = 'Telegram';
+        foreach ($arrayUsersSms as $user) {
+            $recipient = $user['address'];
+            $userMessage = $user['bio'].': '.$this->message;
 
             try {
-                $telegramNotification = app(TelegramNotification::class, ['message' => $this->message]);
-                Notification::route('telegram', [])->notify($telegramNotification);
+                $sendResult = $this->twilioSmsService->sendMessage($recipient, $userMessage);
+                if (! isset($sendResult['success']) || ! $sendResult['success']) {
+                    throw new Exception(($sendResult['message'] ?? ''));
+                }
+                $results[] = $sendResult;
 
-                $this->successRecipientsTelegram[] = $user['address'];
-
+                $this->successRecipientsSms[] = $recipient;
             } catch (Exception $e) {
+                $results[] = 'Send SMS Failed - '.$e->getMessage();
 
                 $this->errorMessage($e, $nameMethod);
             }
         }
+
+        return $results;
     }
 
-    private function errorMessage($e, $nameMethod)
+    public function sendTelegram(array $arrayUsersTelegram): void
+    {
+        $nameMethod = 'Telegram';
+        $success = true;
+        try {
+            $chatId = env('TELEGRAM_CHAT_ID');
+            $messageText = $this->message;
+
+            if (empty($chatId)) {
+                throw new Exception('TELEGRAM_CHAT_ID environment variable is not set');
+            }
+
+            $this->telegramRepository->sendTelegramMessage($chatId, $messageText);
+        } catch (Exception $e) {
+            $this->errorMessage($e, $nameMethod);
+            $success = false;
+        }
+
+        if ($success) {
+            foreach ($arrayUsersTelegram as $user) {
+                $this->successRecipientsTelegram[] = $user['address'];
+            }
+        }
+    }
+
+    private function errorMessage(Exception $e, string $nameMethod): void
     {
         $errorMessage = "Ошибка при отправке сообщения в $nameMethod. Ошибка: ".$e->getMessage();
         Log::error($errorMessage);
         echo $errorMessage;
     }
 
-    public function processingSuccessfulFailedSend()
+    public function processingSuccessfulFailedSend(): array
     {
         $resultProcessing = [];
         $resultProcessingSuccessfulSend = array_merge($this->successRecipientsGmail, $this->successRecipientsSms, $this->successRecipientsTelegram);
 
         foreach ($this->users as $user) {
-            $found = false; // Флаг для определения, было ли найдено совпадение
+            $found = false;
             foreach ($resultProcessingSuccessfulSend as $resultProcessingElem) {
                 if ($user['address'] === $resultProcessingElem) {
                     $found = true;
-                    break; // Найдено совпадение, выходим из внутреннего цикла
+                    break;
                 }
             }
 

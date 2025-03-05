@@ -8,17 +8,13 @@ use Illuminate\Support\Facades\DB;
 
 class NotificationRepository implements NotificationRepositoryInterface
 {
-    private $notificationObject;
-
-    public function createNotification($templateName, $message)
+    public function createNotification(string $templateName, string $message): Notification
     {
         $notificationId = DB::table('notifications')->insertGetId([
             'template_name' => $templateName,
             'message' => $message,
         ]);
 
-        $this->notificationObject = Notification::find($notificationId);
-
-        return $this->notificationObject;
+        return Notification::find($notificationId);
     }
 }

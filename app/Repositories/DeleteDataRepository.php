@@ -4,22 +4,20 @@ namespace App\Repositories;
 
 use App\Interfaces\DeleteDataRepositoryInterface;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
 class DeleteDataRepository implements DeleteDataRepositoryInterface
 {
-    public function deleteDataUsers()
+    public function deleteDataUsers(): JsonResponse
     {
         DB::beginTransaction();
 
         try {
-            // Удаление данных из таблицы 'recipients'
             DB::table('recipients')->delete();
 
-            // Удаление данных из таблицы 'notification__recipients'
             DB::table('notification__recipients')->delete();
 
-            // Удаление данных из таблицы 'notifications'
             DB::table('notifications')->delete();
 
             DB::commit();

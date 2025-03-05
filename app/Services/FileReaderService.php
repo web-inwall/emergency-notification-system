@@ -9,31 +9,35 @@ class FileReaderService implements FileReaderInterface
 {
     public function readData(string $filePath): array
     {
-        $handle = fopen($filePath, 'r'); // Получаем дескриптор файла
-        $csvData = [];
-        $batchId = uniqid(); // Генерация уникального идентификатора
+        try {
+            $handle = fopen($filePath, 'r');
+            if ($handle === false) {
+                throw new Exception('The file could not be opened for reading.');
+            }
 
-        if ($handle !== false) {
+            $csvData = [];
+            $batchId = uniqid();
+
             while (($row = fgetcsv($handle)) !== false) {
                 if (count($row) == 3 && ! empty(trim($row[0])) && ! empty(trim($row[1])) && ! empty(trim($row[2]))) {
                     $csvData[] = [
                         'bio' => trim($row[0]),
                         'link' => trim($row[1]),
                         'address' => trim($row[2]),
-                        'batch_id' => $batchId, // Добавление уникального идентификатора для пачки данных
+                        'batch_id' => $batchId,
                     ];
                 }
             }
 
             fclose($handle);
 
-            if (count($csvData) > 0) {
-                return ['batchId' => $batchId, 'data' => $csvData];
-            } else {
+            if (empty($csvData)) {
                 throw new Exception('The file does not match the CSV format. The data could not be found in the correct format.');
             }
-        } else {
-            throw new Exception('The file could not be opened for reading.');
+
+            return ['batchId' => $batchId, 'data' => $csvData];
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
         }
     }
 }
